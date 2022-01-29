@@ -7,6 +7,44 @@
   pointer-events: none;
 }
 
+.form-item {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  padding: 20px;
+  border-radius: 15px;
+
+  background: #677081;
+  color: #282c34;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.form-item input,
+.form-item textarea {
+  height: 50px;
+  width: 60vw;
+  margin-top: 10px;
+  padding: 10px;
+  background: #a1a9b8;
+  color: #282c34;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+.form-item textarea {
+  height: 20vh;
+}
+
+button {
+  width: 250px;
+  height: 50px;
+  border-radius: 10px;
+  background: #a1a9b8;
+  font-size: 18px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
