@@ -49,7 +49,7 @@ function App() {
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
         <p>
-          Welcome to Fabric's Chaincode Searchable Encryption (FCSE)
+          Welcome Electron App for Fabric's Chaincode Searchable Encryption (FCSE)
         </p>
         <div className="form-item">
           <label htmlFor="secret">Secret passphrase</label>
@@ -71,13 +71,13 @@ function App() {
           
           data.segments = segments.map(async e => ({key: hashStr(e), value: await encryptData(e, hash, salt, secret, iteratrions, keyLength)}));
           
-          data.indices = Object.entries(indices).map(([key, value]) => ({hash: key, pointers: JSON.stringify(value)}))
+          data.indices = Object.entries(indices).map(([key, value]) => ({hash: key, pointers: value}))
 
           let encData = await encryptData(plainText, hash, salt, secret, iteratrions, keyLength)
 
           setCipherText(encData)
 
-          await Promise.all(data.segments).then(segs => { data.segments = segs });
+          await Promise.all(data.segments).then(segs => { data.segments = segs })
 
           fetch('http://localhost:6060/create', {
             method: 'POST',

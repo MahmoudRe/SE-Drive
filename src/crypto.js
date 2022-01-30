@@ -34,17 +34,6 @@ export async function decrypt(encryptedText, keyObject) {
     return textDecoder.decode(decryptedText);
 }
 
-function readFile(file){
-    return new Promise((resolve, reject) => {
-      var fr = new FileReader();  
-      fr.onload = () => {
-        resolve(fr.result )
-      };
-      fr.onerror = reject;
-      fr.readAsText(file.blob);
-    });
-  }
-
 export async function encryptData(text, hash, salt, password, iteratrions, keyLength) {
 	const derivation = await getDerivation(hash, salt, password, iteratrions, keyLength);
 	const keyObject = await getKey(derivation);
