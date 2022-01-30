@@ -1,7 +1,7 @@
 const path = require('path');
 const { connectFabricNetwork, disconnectFabricNetwork } = require("./chaincode-api");
 const { app, BrowserWindow } = require('electron');
-const isDev = require('electron-is-dev');
+// const isDev = require('electron-is-dev');
 
 function createWindow() {
 	const performTransaction = async () => {
@@ -26,14 +26,12 @@ function createWindow() {
   // and load the index.html of the app.
   // win.loadFile("index.html");
   win.loadURL(
-    isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`
+      // 'http://localhost:3000' // [DEV]
+      `file://${path.join(__dirname, '../build/index.html')}`
   );
-  // Open the DevTools.
-  if (isDev) {
-    win.webContents.openDevTools({ mode: 'detach' });
-  }
+  
+  // [DEV]
+  // win.webContents.openDevTools({ mode: 'detach' });
 }
 
 // This method will be called when Electron has finished
