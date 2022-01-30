@@ -8,7 +8,6 @@ exports.connectFabricNetwork = async () => {
   // Create a new file system based wallet for managing identities.
   const walletPath = path.join(process.cwd(), "Wallet");
   const wallet = await Wallets.newFileSystemWallet(walletPath);
-  console.log(`Wallet path: ${walletPath}`);
 
   // Create a new gateway for connecting to our peer node.
   gateway = new Gateway();

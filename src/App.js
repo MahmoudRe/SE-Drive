@@ -39,6 +39,8 @@ function App() {
   const [cipherText, setCipherText] = useState("")
   const [search, setSearch] = useState("")
 
+  const [secretKey, setSecretKey] = useState(null);
+
   const hash = "SHA-256";
   const salt = "SALT";
   const iteratrions = 1000;
@@ -95,14 +97,10 @@ function App() {
           <input type="text" id="secret" value={search} onChange={e => setSearch(e.target.value)}/>
         </div>
         <button type="button" onClick={async e => { 
-
-          fetch('http://localhost:6060/search/'+search, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-          }).then((res) => res.json()).then(res => setCipherText(res))
-
+          const { ipcRenderer } = window.require('electron');
+          let res = await ipcRenderer.invoke('evaluate-transaction', ['search', search])
+          res = await decryptData(res, hash, salt, secret, iteratrions, keyLength).catch(console.log)
+          setCipherText(res);
         }}> Search</button>
       </header>
     </div>

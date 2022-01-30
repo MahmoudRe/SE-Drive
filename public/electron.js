@@ -1,37 +1,28 @@
 const path = require('path');
 const { connectFabricNetwork, disconnectFabricNetwork } = require("./chaincode-api");
 const { app, BrowserWindow } = require('electron');
-// const isDev = require('electron-is-dev');
+const { ipcMain } = require('electron');
 
 function createWindow() {
-	const performTransaction = async () => {
-			const contract = await connectFabricNetwork();
-
-			// Submit the specified transaction.
-			const result = await contract.submitTransaction("write", "Test", "test 123");
-
-			disconnectFabricNetwork();
-	}
-	performTransaction()
-
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
     height: 1000,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false
     },
   });
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
   win.loadURL(
-      // 'http://localhost:3000' // [DEV]
-      `file://${path.join(__dirname, '../build/index.html')}`
+      'http://localhost:3000' // [DEV]
+      // `file://${path.join(__dirname, '../build/index.html')}`
   );
   
   // [DEV]
-  // win.webContents.openDevTools({ mode: 'detach' });
+  win.webContents.openDevTools({ mode: 'detach' });
 }
 
 // This method will be called when Electron has finished
@@ -53,3 +44,17 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+ipcMain.handle('submit-transaction', async (event, args) => {
+  const contract = await connectFabricNetwork();
+  const result = await contract.submitTransaction(...args);
+  disconnectFabricNetwork();
+  return result;
+})
+
+ipcMain.handle('evaluate-transaction', async (event, args) => {
+  const contract = await connectFabricNetwork();
+  const result = await contract.evaluateTransaction(...args);
+  disconnectFabricNetwork();
+  return result;
+})

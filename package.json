@@ -64,11 +64,11 @@
   "build": {
     "appId": "nonExistentID",
     "files": [
-    "build/**/*",
-    "node_modules/**/*"
+      "build/**/*",
+      "node_modules/**/*"
     ],
-    "directories":{
-    "buildResources": "assets"
+    "directories": {
+      "buildResources": "assets"
     }
   }
 }
