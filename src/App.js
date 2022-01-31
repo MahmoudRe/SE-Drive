@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
-import { getKey, encrypt, decrypt, ab2str, str2ab } from './crypto';
+import { generateSecretKey, encrypt, decrypt, ab2str, str2ab } from './crypto';
 import './App.css';
 
 function hashStr(str) {
@@ -41,11 +41,6 @@ function App() {
 
   const [secretKey, setSecretKey] = useState(null);
 
-  const hash = "SHA-256";
-  const salt = "SALT";
-  const iteratrions = 1000;
-  const keyLength = 48;
-
   return (
     <div className="App">
       <header className="App-header">
@@ -58,7 +53,7 @@ function App() {
           <input type="text" id="secret" value={secret} onChange={e => setSecret(e.target.value)}/>
         </div>
         <button type="button" onClick={async e => {
-          const key = await getKey(hash, salt, secret, iteratrions, keyLength)
+          const key = await generateSecretKey(secret)
           setSecretKey(key)
         }} style={{background: secretKey? 'green' : undefined}}> { secretKey? "Key is successfully created" : "Create key!"} </button>
         <div className="form-item">
