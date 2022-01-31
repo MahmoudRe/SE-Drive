@@ -1,23 +1,38 @@
-export async function generateSecretKey(password = "PASSPHRASE", options = {}) {
+/**
+ * Generate a symmetric secret key for AES-CBC encryption algorithm,
+ * with initial vector (iv), based on given secret (password) and salt.
+ * This algorithm is deterministic, given the same secret and salt. If salt isn
+ * @param {string} [secret="PASSPHRASE"]  textual based to derive the password from, e.g. password.
+ * @param {object} options
+ * @param {string} [options.hash="SHA-256"] the hashing algorithm for deriving bits used by `PBKDF2` algorithm, e.g. 'SHA-256'.
+ *    Please refer to `PBKDF2` specification for supported hashing algorithms.
+ * @param {string|ArrayBuffer} [options.salt] secure random value is used as default value.
+ *    For deterministic key generation, please provide the same salt.
+ * @param {number} [options.iterations=999] the number of iteration performed by `PBKDF2` algorithm.
+ * @param {number} [options.keyLengthByte=48] the length of the generated key in byte;
+ *    however, only the first 32 byte (256-bit) are used for AES and last 16 byte (128-bit) for the initial vector, hence the default value 48.
+ * @returns
+ */
+export async function generateSecretKey(secret = "PASSPHRASE", options = {}) {
   //default options
   let {
     hash = "SHA-256",
-    salt = crypto.randomUUID(),
+    salt = crypto.getRandomValues(new Uint8Array(512)), //get secure random value
     iterations = 999,
-    keyLengthByte = 64,
+    keyLengthByte = 48,
   } = options;
 
   // Convert password to key object to use it for driving bits
   const deriveBitsKey = await crypto.subtle.importKey(
     "raw",
-    str2ab(password), //to Buffer
+    str2ab(secret), //to Buffer
     "PBKDF2",
     false,
     ["deriveBits"]
   );
 
   // Drive bits for our derived secret key and iv (initial vector)
-  const saltBuffer = str2ab(salt);
+  const saltBuffer = typeof salt === "string" ? str2ab(salt) : salt;
   const derivedBits = await crypto.subtle.deriveBits(
     {
       name: "PBKDF2",
@@ -26,17 +41,17 @@ export async function generateSecretKey(password = "PASSPHRASE", options = {}) {
       iterations: iterations,
     },
     deriveBitsKey,
-    keyLengthByte * 8   //Byte to bits
+    keyLengthByte * 8 //Byte to bits
   );
 
   // Generate the secret key from derived bits and initial vectors
-  const derivedKey = derivedBits.slice(0, 32);  
-  const iv = derivedBits.slice(32);
+  const derivedKey = derivedBits.slice(0, 32); //32 byte = 256 bit (maximum key length allowed by AES)
+  const iv = derivedBits.slice(-16); // 16 byte = 128 bit (maximum allowed length for initial vector by AES)
   const secretKey = await crypto.subtle.importKey(
     "raw",
     derivedKey,
     { name: "AES-CBC" },
-    true,    // => we can extract key later on
+    true, // => we can extract key later on
     ["encrypt", "decrypt"]
   );
 
@@ -46,25 +61,37 @@ export async function generateSecretKey(password = "PASSPHRASE", options = {}) {
   };
 }
 
-export async function encrypt(text, keyObject) {
-  const textEncoder = new TextEncoder("utf-8");
-  const textBuffer = textEncoder.encode(text);
+/**
+ * Encrypt textual based data using the AES-CBC encryption algorithm.
+ * @param {string} text string text to be encrypted.
+ * @param {*} keyObject
+ * @param {'hex'|'utf-8'|'ascii'|'base64'|'..etc'} [encoding='hex'] the encoding of the encrypted text; default: 'hex'.
+ * @returns textual representation of the encrypted data
+ */
+export async function encrypt(text, keyObject, encoding) {
   const encryptedText = await crypto.subtle.encrypt(
+    { name: "AES-CBC", iv: keyObject.iv },
+    keyObject.key,
+    str2ab(text, encoding)
+  );
+  return ab2str(encryptedText, encoding);
+}
+
+/**
+ * Decrypt textual representation of encrypted data using the AES-CBC encryption algorithm.
+ * @param {string} encryptedText textual representation of the encrypted data.
+ * @param {*} keyObject
+ * @param {'hex'|'utf-8'|'ascii'|'base64'|'..etc'} [encoding='hex'] the encoding of the encrypted text; default: 'hex'.
+ * @returns
+ */
+export async function decrypt(encryptedText, keyObject, encoding) {
+  const textBuffer = str2ab(encryptedText, encoding);
+  const decryptedText = await crypto.subtle.decrypt(
     { name: "AES-CBC", iv: keyObject.iv },
     keyObject.key,
     textBuffer
   );
-  return encryptedText;
-}
-
-export async function decrypt(encryptedText, keyObject) {
-  const textDecoder = new TextDecoder("utf-8");
-  const decryptedText = await crypto.subtle.decrypt(
-    { name: "AES-CBC", iv: keyObject.iv },
-    keyObject.key,
-    encryptedText
-  );
-  return textDecoder.decode(decryptedText);
+  return ab2str(decryptedText, encoding);
 }
 
 /**
@@ -90,11 +117,4 @@ export function str2ab(string, encoding = "hex") {
     typedArray[i] = bufferObject[i];
   }
   return typedArray;
-
-  // --- Another implementation that convert hex to ArrayBuffer
-  // var hex = encryptedData
-  // var typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
-  //   return parseInt(h, 16)
-  // }))
-  // return arrayBuffer = typedArray.buffer
 }

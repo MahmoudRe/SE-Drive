@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
-import { generateSecretKey, encrypt, decrypt, ab2str, str2ab } from './crypto';
+import { generateSecretKey, encrypt, decrypt } from './crypto';
 import './App.css';
 
 function hashStr(str) {
@@ -74,7 +74,6 @@ function App() {
           segments.forEach(async e => {
             let key = hashStr(e)
             let value = await encrypt(e, secretKey)
-            value = ab2str(value);
             ipcRenderer.invoke('submit-transaction', ['storeEncryptedSegment', key, value])
           });
           
@@ -96,8 +95,7 @@ function App() {
           let result = pointers.map(async pointer => {
             const encryptedSegment = await ipcRenderer.invoke('evaluate-transaction', ['read', pointer]) // ArrayBuffer object
             const decodedSegment = new TextDecoder('utf-8').decode(encryptedSegment)
-            const arrayBuffer = str2ab(decodedSegment)
-            return decrypt(arrayBuffer, secretKey)
+            return decrypt(decodedSegment, secretKey)
           })
 
           Promise.all(result).then(e => setCipherText(e.reduce((prev, curr) => prev + " - " + curr)))
