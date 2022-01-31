@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
-import { encryptData, decryptData, ab2str } from './crypto';
+import { getKey, encrypt, decrypt, ab2str, str2ab } from './crypto';
 import './App.css';
 
 function hashStr(str) {
@@ -57,6 +57,10 @@ function App() {
           <label htmlFor="secret">Secret passphrase</label>
           <input type="text" id="secret" value={secret} onChange={e => setSecret(e.target.value)}/>
         </div>
+        <button type="button" onClick={async e => {
+          const key = await getKey(hash, salt, secret, iteratrions, keyLength)
+          setSecretKey(key)
+        }} style={{background: secretKey? 'green' : undefined}}> { secretKey? "Key is successfully created" : "Create key!"} </button>
         <div className="form-item">
           <label htmlFor="plaintext">Plain Text</label>
           <textarea type="text" id="plaintext" value={plainText} onChange={e => setPlainText(e.target.value)}/>
@@ -66,41 +70,44 @@ function App() {
           <textarea type="text" id="ciphertext" value={cipherText} onChange={e => setCipherText(e.target.value)}/>
         </div>
         <button type="button" onClick={async e => { 
+          const { ipcRenderer } = window.require('electron');
           const data = {};
 
           const segments = divideSemgents(plainText);
           const indices = buildIndexes(segments);
           
-          data.segments = segments.map(async e => ({key: hashStr(e), value: await encryptData(e, hash, salt, secret, iteratrions, keyLength)}));
+          segments.forEach(async e => {
+            let key = hashStr(e)
+            let value = await encrypt(e, secretKey)
+            value = ab2str(value);
+            ipcRenderer.invoke('submit-transaction', ['storeEncryptedSegment', key, value])
+          });
           
           data.indices = Object.entries(indices).map(([key, value]) => ({hash: key, pointers: value}))
-
-          let encData = await encryptData(plainText, hash, salt, secret, iteratrions, keyLength)
-
-          setCipherText(encData)
-
-          await Promise.all(data.segments).then(segs => { data.segments = segs })
-
-          fetch('http://localhost:6060/create', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(data)
-          })
-
+          ipcRenderer.invoke('submit-transaction', ['addIndicesJSON', JSON.stringify(data.indices)])
+          
+          // let res = await ipcRenderer.invoke('submit-transaction', ['createJSON', JSON.stringify(data.segments), JSON.stringify(data.indices)])          
         }}> Encrypt</button>
 
         <div className="form-item">
-          <label htmlFor="secret">Search</label>
-          <input type="text" id="secret" value={search} onChange={e => setSearch(e.target.value)}/>
+          <label htmlFor="search">Search</label>
+          <input type="text" id="search" value={search} onChange={e => setSearch(e.target.value)}/>
         </div>
         <button type="button" onClick={async e => { 
           const { ipcRenderer } = window.require('electron');
-          let res = await ipcRenderer.invoke('evaluate-transaction', ['search', search])
-          res = await decryptData(res, hash, salt, secret, iteratrions, keyLength).catch(console.log)
-          setCipherText(res);
+          let pointers = await ipcRenderer.invoke('evaluate-transaction', ['search', search])
+          pointers = JSON.parse(new TextDecoder('utf-8').decode(pointers))
+        
+          let result = pointers.map(async pointer => {
+            const encryptedSegment = await ipcRenderer.invoke('evaluate-transaction', ['read', pointer]) // ArrayBuffer object
+            const decodedSegment = new TextDecoder('utf-8').decode(encryptedSegment)
+            const arrayBuffer = str2ab(decodedSegment)
+            return decrypt(arrayBuffer, secretKey)
+          })
+
+          Promise.all(result).then(e => setCipherText(e.reduce((prev, curr) => prev + " - " + curr)))
+
+          // setCipherText(res);
         }}> Search</button>
       </header>
     </div>
