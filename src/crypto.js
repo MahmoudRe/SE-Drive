@@ -69,12 +69,12 @@ export async function generateSecretKey(secret = "PASSPHRASE", options = {}) {
  * @returns textual representation of the encrypted data
  */
 export async function encrypt(text, keyObject, encoding) {
-  const encryptedText = await crypto.subtle.encrypt(
+  const encryptedBuffer = await crypto.subtle.encrypt(
     { name: "AES-CBC", iv: keyObject.iv },
     keyObject.key,
-    str2ab(text, encoding)
+    str2ab(text, 'utf-8')
   );
-  return ab2str(encryptedText, encoding);
+  return ab2str(encryptedBuffer, encoding);
 }
 
 /**
@@ -91,7 +91,7 @@ export async function decrypt(encryptedText, keyObject, encoding) {
     keyObject.key,
     textBuffer
   );
-  return ab2str(decryptedText, encoding);
+  return ab2str(decryptedText, 'utf-8');
 }
 
 /**
