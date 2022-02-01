@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
-import { genSecretKey, encrypt, decrypt, buildIndex, trapdoor } from './crypto';
+import { genSecretKey, encrypt, decrypt, buildIndex, trapdoor } from 'searchable-encryption';
 import './App.css';
 
 function divideSemgents(str) {
@@ -55,7 +55,6 @@ function App() {
           indices = await indices;
           
           data.indices = Object.entries(indices).map(([key, value]) => ({hash: key, pointers: value}))
-          console.log(data.indices);
           ipcRenderer.invoke('submit-transaction', ['addIndicesJSON', JSON.stringify(data.indices)])
           
           // let res = await ipcRenderer.invoke('submit-transaction', ['createJSON', JSON.stringify(data.segments), JSON.stringify(data.indices)])          
