@@ -1,36 +1,10 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
-import { generateSecretKey, encrypt, decrypt } from './crypto';
+import { genSecretKey, encrypt, decrypt, buildIndex, trapdoor } from './crypto';
 import './App.css';
-
-function hashStr(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash &= hash; // Convert to 32bit integer
-  }
-  return new Uint32Array([hash])[0].toString(36);
-}
 
 function divideSemgents(str) {
   return str.split('\n\n')
-}
-
-function buildIndexes(segments) {
-  let res = {};
-  for(let i = 0; i < segments.length; i++) {
-    let tokens = segments[i].split(' ');
-
-    let hash = hashStr(segments[i])
-
-    for(let token of tokens) {
-      res[token] = res[token] || [];
-      res[token] = [...res[token], hash]
-    }
-  }
-
-  return res;
 }
 
 function App() {
@@ -53,7 +27,7 @@ function App() {
           <input type="text" id="secret" value={secret} onChange={e => setSecret(e.target.value)}/>
         </div>
         <button type="button" onClick={async e => {
-          const key = await generateSecretKey(secret)
+          const key = await genSecretKey(secret)
           setSecretKey(key)
         }} style={{background: secretKey? 'green' : undefined}}> { secretKey? "Key is successfully created" : "Create key!"} </button>
         <div className="form-item">
@@ -68,16 +42,20 @@ function App() {
           const { ipcRenderer } = window.require('electron');
           const data = {};
 
-          const segments = divideSemgents(plainText);
-          const indices = buildIndexes(segments);
+          let segments = divideSemgents(plainText);
+          segments = segments.map(e => ({pointer: crypto.randomUUID(), data: e}))
+
+          let indices = buildIndex(segments, secretKey.key);
           
           segments.forEach(async e => {
-            let key = hashStr(e)
-            let value = await encrypt(e, secretKey)
-            ipcRenderer.invoke('submit-transaction', ['storeEncryptedSegment', key, value])
+            let value = await encrypt(e.data, secretKey)
+            ipcRenderer.invoke('submit-transaction', ['storeEncryptedSegment', e.pointer, value])
           });
+
+          indices = await indices;
           
           data.indices = Object.entries(indices).map(([key, value]) => ({hash: key, pointers: value}))
+          console.log(data.indices);
           ipcRenderer.invoke('submit-transaction', ['addIndicesJSON', JSON.stringify(data.indices)])
           
           // let res = await ipcRenderer.invoke('submit-transaction', ['createJSON', JSON.stringify(data.segments), JSON.stringify(data.indices)])          
@@ -89,7 +67,7 @@ function App() {
         </div>
         <button type="button" onClick={async e => { 
           const { ipcRenderer } = window.require('electron');
-          let pointers = await ipcRenderer.invoke('evaluate-transaction', ['search', search])
+          let pointers = await ipcRenderer.invoke('evaluate-transaction', ['search', await trapdoor(search, secretKey.key)])
           pointers = JSON.parse(new TextDecoder('utf-8').decode(pointers))
         
           let result = pointers.map(async pointer => {
@@ -99,8 +77,6 @@ function App() {
           })
 
           Promise.all(result).then(e => setCipherText(e.reduce((prev, curr) => prev + " - " + curr)))
-
-          // setCipherText(res);
         }}> Search</button>
       </header>
     </div>
