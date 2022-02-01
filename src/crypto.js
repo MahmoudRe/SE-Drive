@@ -6,7 +6,7 @@
  * @param {object} options
  * @param {string} [options.hash="SHA-256"] the hashing algorithm for deriving bits used by `PBKDF2` algorithm, e.g. 'SHA-256'.
  *    Please refer to `PBKDF2` specification for supported hashing algorithms.
- * @param {string|ArrayBuffer} [options.salt] secure random value is used as default value.
+ * @param {string|ArrayBuffer} [options.salt] default value is a secure random value is used.
  *    For deterministic key generation, please provide the same salt.
  * @param {number} [options.iterations=999] the number of iteration performed by `PBKDF2` algorithm.
  * @param {number} [options.keyLengthByte=48] the length of the generated key in byte;
@@ -84,14 +84,47 @@ export async function encrypt(text, keyObject, encoding) {
  * @param {'hex'|'utf-8'|'ascii'|'base64'|'..etc'} [encoding='hex'] the encoding of the encrypted text; default: 'hex'.
  * @returns
  */
-export async function decrypt(encryptedText, keyObject, encoding) {
-  const textBuffer = str2ab(encryptedText, encoding);
+export async function decrypt(encryptedData, keyObject, encoding) {
+  const dataBuffer = typeof encryptedData === 'string' ? str2ab(encryptedData, encoding) : encryptedData;
   const decryptedText = await crypto.subtle.decrypt(
     { name: "AES-CBC", iv: keyObject.iv },
     keyObject.key,
-    textBuffer
+    dataBuffer
   );
   return ab2str(decryptedText, 'utf-8');
+}
+
+/**
+ * Digest (hash) String or ArrayBuffer data.
+ * Optionally with salt.
+ * @param {string|ArrayBuffer} data 
+ * @param {"SHA-1"|"SHA-256"|"SHA-384"|"SHA-512"} [option.hash] the algorithm to be used for hashing; default is SHA-256.
+ * @param {string|ArrayBuffer} option.salt the salt is used for difusing the text before hashing.
+ * @returns textual representation default 'hex' of the hash. 
+ */
+export async function digest(data, options = {}) {
+  let {
+    hash = "SHA-256",
+    salt = "DEFAULT-SALT",
+  } = options;
+  const saltBuffer = typeof salt === "string" ? str2ab(salt, 'utf-8') : salt;
+  const dataBuffer = typeof data === 'string' ? str2ab(data, 'utf-8') : data;
+  const hashBuffer = await crypto.subtle.digest(hash, abConcat(dataBuffer, saltBuffer));
+  return ab2str(hashBuffer);
+}
+
+/**
+ * Concat two or multiple ArrayBuffer passed as arguments.
+ * @param  {...ArrayBuffer} buffers buffers passed as multiple arguments.
+ * @returns ArrayBuffer resulted by concatenating the given buffers.
+ */
+function abConcat(...buffers){
+	const result = new Uint8Array(buffers.reduce((totalSize, buf)=>totalSize+buf.byteLength, 0));
+	buffers.reduce( (offset, buffer) => {
+		result.set(buffer,offset)
+		return offset + buffer.byteLength
+	}, 0)
+	return result
 }
 
 /**
