@@ -20,7 +20,7 @@ function App() {
     data.segments = segments.map(e => ({ pointer: crypto.randomUUID(), data: e }))
 
     //build index and encrypt segments
-    data.indexTable = buildIndex(segments, secretKey.key);
+    data.indexTable = buildIndex(data.segments, secretKey.key);
     data.segments = data.segments.map(async ({pointer, data}) => ({pointer: pointer, data: await encrypt(data, secretKey)}))
     data.segments = await Promise.all(data.segments);
     data.indexTable = await data.indexTable;
