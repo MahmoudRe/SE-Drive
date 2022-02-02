@@ -1,76 +1,74 @@
 .App {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  gap: 2rem;
+
+  height: 100vh;
+  padding: 6vh 10%;
+  font-size: 1.6rem;
+}
+
+header, .header {
+  font-family: 'Squada One', cursive;
+  font-size: 2.6rem;
+  position: relative;
+  margin: auto;
+}
+
+.--color-primary-txt {
+  color: var(--color-primary);
+}
+
+.sub-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.3rem;
+}
+.sub-header > svg {
+  height: 100%;
+  width: 4rem;
+}
+
+.either-area {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  place-items: center;
+}
+
+button, .button {
+  all: unset;
+  background: var(--color-primary);
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.form-item {
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-  padding: 20px;
-  border-radius: 15px;
-
-  background: #677081;
-  color: #282c34;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.form-item input,
-.form-item textarea {
-  height: 50px;
-  width: 60vw;
-  margin-top: 10px;
-  padding: 10px;
-  background: #a1a9b8;
-  color: #282c34;
-  border: none;
-  border-radius: 10px;
-  font-size: 20px;
-}
-
-.form-item textarea {
-  height: 20vh;
-}
-
-button {
-  width: 250px;
-  height: 50px;
-  border-radius: 10px;
-  background: #a1a9b8;
-  font-size: 18px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 30;
+  padding: 1rem 3rem;
+  font-size: 2rem;
+  font-weight: 600;
   color: white;
+  border-radius: 7px;
+  user-select: none;
 }
 
-.App-link {
-  color: #61dafb;
+.OR {
+  font-family: 'Overpass', cursive;
+  font-weight: 600;
+  font-size: 4rem;
+  color: var(--color-light-gray);
+  line-height: 1;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.drag-drop-area {
+  display: grid;
+  place-items: center;
+  width: 40rem;
+  height: 15rem;
+  background: var(--color-primary);
+  border-radius: 7px;
+  align-items: center;
+  opacity: 0.7;
+}
+
+label, .label {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: .5rem;
 }
