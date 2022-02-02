@@ -37,6 +37,7 @@ export default class AdvanceFileInput {
             withPreview = false,            //show the built-in image preview
             withAnimation = true,           //show in/out-animation for file-card
             maxFileSize = 3e+6,             //size in bytes
+            dragText = 'Drag your file here',
             beforeLoadingPreview = () => {},
             onFileAdded = () => {},
             onFileRemoved = () => {}
@@ -103,8 +104,8 @@ export default class AdvanceFileInput {
         if (withAnimation) cloudIcon.classList.add('--animate');
         if (!input.multiple) Object.assign(cloudIcon.style, { height: '35px', transform: 'scale(1.1)' });
 
-        let dragText = parseElement('<p> Drag your network connection.json file or <a> browse </a> </p>');
-        label.appendChild(dragText);
+        let dragTextEl = parseElement(`<p> ${dragText} or <a> browse </a> </p>`);
+        label.appendChild(dragTextEl);
 
 
         let filesContainer = document.createElement('div');
@@ -361,13 +362,13 @@ export default class AdvanceFileInput {
                         status: bytesToString(newFile.size),
                         onRemove: (file) => {
                             input.value = "";
-                            dragText.style.display = 'block';
+                            dragTextEl.style.display = 'block';
                             if (externalPreviewWrapper) externalPreviewWrapper.innerHTML = previousImgHTML || "";
                             onFileRemoved(file)
                         },
                         animate
                     });
-                    dragText.style.display = 'none';
+                    dragTextEl.style.display = 'none';
                 }
 
                 //show preview img

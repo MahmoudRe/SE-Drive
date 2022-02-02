@@ -32,8 +32,7 @@ header, .header {
 .either-area {
   display: grid;
   grid-template-columns: minmax(20rem, auto) 1fr auto;
-  place-items: center;
-  gap: 1.5rem
+  gap: 3rem;
 }
 
 button, .button {
@@ -68,17 +67,18 @@ button:active,
 }
 
 .OR {
-  font-family: 'Overpass', cursive;
+  /* font-family: 'Overpass', cursive; */
+  place-self: center;
   font-weight: 600;
   font-size: 4vw;
-  color: var(--color-light-gray);
+  color: var(--color-gray-light);
   line-height: 1;
   margin: 0;
   margin-top: .5rem;
 }
 
 .advance-file-input {
-  width: 45vw;
+  width: 100%;
   height: 10rem;
   border-radius: 7px;
   align-items: center;
@@ -97,13 +97,32 @@ label, .label {
 
 a:-webkit-any-link,
 a {
-  color: black;
+  color: inherit;
   text-decoration: underline;
 }
 
 
 a:hover {
   color: var(--color-primary);
+}
+
+.form-field {
+  min-width: 25rem;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.form-field label {
+  margin-bottom: .7rem;
+}
+
+input[type="text"] {
+  all: unset;
+  border: 2px solid var(--color-primary); 
+  border-radius: 5px;
+  padding: .7rem;
+  background-color: rgb(253, 253, 253);
 }
 
 
@@ -113,10 +132,12 @@ a:hover {
     flex-direction: column-reverse;
     align-items: flex-start;
     margin-top: 1rem;
+    gap: 2rem;
   }
   
   .either-area .OR {
     margin-top: -1.2rem;
+    align-self: start;
   }
 
   .advance-file-input { 

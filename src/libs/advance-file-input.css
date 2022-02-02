@@ -1,5 +1,5 @@
 .advance-file-input {
-  --bg-color: #eff9ff;
+  --bg-color: var(--color-primary-bg);
   display: grid;
   align-items: center;
   grid-template-columns: minmax(100%, min-content);
@@ -20,7 +20,7 @@
   min-height: 170px;
 }
 .advance-file-input.--dragover {
-  --bg-color: #dbf0fd;
+  --bg-color: var(--color-primary-bg-tint);
   border-color: var(--color-primary);
   cursor: grabbing;
 }

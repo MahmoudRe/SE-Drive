@@ -6,6 +6,10 @@
   --color-primary: #009FDA;
   --color-primary-light: #13b0e9;
   --color-primary-dark: #2c8caf;
+
+  --color-primary-bg: #eff9ff;
+  --color-primary-bg-tint: #dbf0fd;
+
   --color-gray-light: #CCCCCC;
   --color-gray: #878787
 }
