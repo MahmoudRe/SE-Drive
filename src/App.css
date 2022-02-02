@@ -12,7 +12,7 @@ header, .header {
   font-family: 'Squada One', cursive;
   font-size: 2.6rem;
   position: relative;
-  margin: auto;
+  /* margin: auto; */
 }
 
 .--color-primary-txt {
@@ -31,8 +31,9 @@ header, .header {
 
 .either-area {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: minmax(20rem, auto) 1fr auto;
   place-items: center;
+  gap: 1.5rem
 }
 
 button, .button {
@@ -51,24 +52,54 @@ button, .button {
 .OR {
   font-family: 'Overpass', cursive;
   font-weight: 600;
-  font-size: 4rem;
+  font-size: 4vw;
   color: var(--color-light-gray);
   line-height: 1;
+  margin: 0;
+  margin-top: .5rem;
 }
 
-.drag-drop-area {
-  display: grid;
-  place-items: center;
-  width: 40rem;
+.advance-file-input {
+  width: 45vw;
   height: 15rem;
-  background: var(--color-primary);
   border-radius: 7px;
   align-items: center;
-  opacity: 0.7;
+  margin-top: .7rem;
 }
 
 label, .label {
   font-size: 1.8rem;
   font-weight: 600;
-  margin-bottom: .5rem;
+}
+
+.error {
+  color: rgb(253, 114, 109);
+  margin-top: .7rem;
+}
+
+a {
+  text-decoration: underline;
+  
+}
+
+a:hover {
+  color: var(--color-primary);
+}
+
+
+@media (max-width: 890px) {
+  .either-area {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    margin-top: 1rem;
+  }
+  
+  .either-area .OR {
+    margin-top: -1.2rem;
+  }
+
+  .advance-file-input { 
+    width: 80vw;
+  }
 }

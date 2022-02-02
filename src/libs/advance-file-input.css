@@ -1,0 +1,244 @@
+.advance-file-input {
+  --bg-color: #eff9ff;
+  display: grid;
+  align-items: center;
+  grid-template-columns: minmax(100%, min-content);
+  grid-template-rows: auto 1fr;
+  position: relative;
+  text-align: center;
+  height: fit-content;
+  min-height: 95px;
+  background-color: var(--bg-color);
+  border: 2px dashed var(--color-primary);
+  border-radius: 0.4rem;
+  padding-top: 1.7rem;
+  padding-bottom: 1.3rem;
+  margin-bottom: 0.18rem;
+  user-select: none;
+}
+.advance-file-input.--has-preview-container {
+  min-height: 170px;
+}
+.advance-file-input.--dragover {
+  --bg-color: #dbf0fd;
+  border-color: var(--color-primary);
+  cursor: grabbing;
+}
+.advance-file-input.--dragover #cloud-upload-icon.--animate #cloud-upload-icon__arrow {
+  animation: bounceCloudArrow 0.5s ease 0s infinite alternate;
+}
+@keyframes bounceCloudArrow {
+  from {
+    transform: translateY(0px);
+ }
+  to {
+    transform: translateY(4px);
+ }
+}
+.advance-file-input.--dragover-sortable .preview-container .preview-card:hover .preview-card__tooltip {
+  display: none;
+}
+.advance-file-input label {
+  margin: 0;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.advance-file-input label p {
+  margin: 1rem 0 0 0;
+  text-align: center;
+  font-weight: normal;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.advance-file-input label p a {
+  cursor: pointer;
+}
+.advance-file-input label .error {
+  margin: 5px 0 0 0;
+  text-align: center;
+}
+.advance-file-input__remove-btn {
+  transform: scale(0.75);
+  width: 3rem;
+  height: 3rem;
+  border-radius: 2px;
+  background: #484848;
+  display: grid;
+  place-items: center;
+}
+.advance-file-input__remove-btn:hover {
+  cursor: pointer;
+  background: var(--color-primary);
+}
+.advance-file-input .preview-container:not(:empty) + label #cloud-upload-icon, .advance-file-input .files-container:not(:empty) + label #cloud-upload-icon {
+  display: none;
+}
+.advance-file-input .files-container {
+  display: grid;
+  gap: 1rem;
+  margin: 0 1.5rem;
+  overflow: hidden;
+}
+.advance-file-input .files-container .file-card {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: auto 1fr auto;
+  border-radius: 4px;
+  background: white;
+  padding: 1rem;
+  height: 5.6rem;
+  cursor: grab;
+}
+.advance-file-input .files-container .file-card__icon {
+  grid-column: 1;
+  grid-row: -1;
+  margin: auto;
+  margin-right: 15px;
+}
+.advance-file-input .files-container .file-card__icon svg {
+  display: block;
+}
+.advance-file-input .files-container .file-card__name {
+  grid-row: 1;
+  grid-column: 2;
+  font-size: 1.5rem;
+  font-weight: 500;
+  text-align: start;
+  line-height: 1;
+  margin: 3px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+.advance-file-input .files-container .file-card__name::after {
+  content: "";
+  background: linear-gradient(to left, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  position: absolute;
+  width: 10px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+}
+.advance-file-input .files-container .file-card__status {
+  grid-row: 2;
+  grid-column: 2;
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-align: start;
+  line-height: 1;
+  color: var(--color-primary);
+  margin: 4px 0 0 0;
+}
+.advance-file-input .files-container .file-card__remove {
+  grid-column: 3;
+  grid-row: -1;
+  margin: auto 7px;
+}
+.advance-file-input .preview-container {
+  display: flex;
+  overflow-x: auto;
+  padding: 0 1.5rem;
+  scrollbar-width: none;
+}
+.advance-file-input .preview-container::-webkit-scrollbar {
+  display: none;
+}
+.advance-file-input .preview-container::before, .advance-file-input .preview-container::after {
+  content: "";
+  width: 15px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+}
+.advance-file-input .preview-container::before {
+  background: linear-gradient(to left, var(--bg-color) 65%, rgba(255, 255, 255, 0) 100%);
+  right: 0;
+}
+.advance-file-input .preview-container::after {
+  background: linear-gradient(to right, var(--bg-color) 65%, rgba(255, 255, 255, 0) 100%);
+  left: 0;
+}
+.advance-file-input .preview-container__arrow {
+  display: none;
+  position: absolute;
+  top: 63px;
+  z-index: 3;
+  border-radius: 15px;
+  box-shadow: 0 2px 2px 0 rgba(34, 34, 34, 0.08);
+  cursor: pointer;
+}
+.advance-file-input .preview-container__arrow.--left {
+  left: -14px;
+}
+.advance-file-input .preview-container__arrow.--right {
+  right: -14px;
+}
+.advance-file-input .preview-container__arrow:hover circle {
+  fill: #2d7974;
+}
+.advance-file-input .preview-container__arrow:active {
+  height: 22px;
+  transform: translateY(1px);
+}
+.advance-file-input .preview-container.--no-tooltip .preview-card__tooltip {
+  display: none !important;
+}
+.advance-file-input .preview-container .preview-card {
+  position: relative;
+  cursor: grab;
+  background-color: #fff;
+  flex-shrink: 0;
+  width: 11rem;
+  height: 11rem;
+  border: 1px solid #cad1d7;
+  border-radius: 0.4rem;
+  overflow: hidden;
+}
+.advance-file-input .preview-container .preview-card:not(:last-child) {
+  margin-right: 1.6rem;
+}
+.advance-file-input .preview-container .preview-card:active {
+  cursor: grabbing;
+}
+.advance-file-input .preview-container .preview-card:hover .preview-card__tooltip {
+  display: block;
+}
+.advance-file-input .preview-container .preview-card__tooltip {
+  display: none;
+  position: fixed;
+  max-width: 300px;
+  word-break: break-all;
+  text-align: left;
+  background: var(--color-primary);
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: 500;
+  padding: 3px;
+  border-radius: 3px;
+  z-index: 5;
+}
+.advance-file-input .preview-container .preview-card img {
+  width: 11rem;
+  height: 11rem;
+  object-fit: cover;
+  border-radius: 0.4rem;
+}
+.advance-file-input .preview-container .preview-card__remove {
+  position: absolute;
+  right: 0;
+}
+.advance-file-input .preview-container .preview-card__remove:hover + .preview-card__tooltip {
+  display: none;
+}
+.advance-file-input .file-card.sortable-ghost, .advance-file-input .preview-card.sortable-ghost {
+  background: var(--bg-color);
+  border: 2px dashed var(--color-primary);
+  cursor: grabbing !important;
+}
+.advance-file-input .file-card.sortable-ghost *, .advance-file-input .preview-card.sortable-ghost * {
+  visibility: hidden;
+}
