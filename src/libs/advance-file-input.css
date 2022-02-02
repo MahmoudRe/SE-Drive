@@ -41,6 +41,7 @@
 
 .advance-file-input + .error + p.help-text {
   margin: .1rem 0 1rem;
+  color: var(--color-gray);
 }
 
 .advance-file-input label {
@@ -59,6 +60,7 @@
 }
 .advance-file-input label p a {
   cursor: pointer;
+  text-decoration: none;
 }
 .advance-file-input label .error {
   margin: 5px 0 0 0;

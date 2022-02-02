@@ -4,9 +4,10 @@
 :root {
   font-size: 10px;
   --color-primary: #009FDA;
-  --color-primary-light: hsl(196, 100%, 50%);
+  --color-primary-light: #13b0e9;
   --color-primary-dark: #2c8caf;
-  --color-light-gray: #CCCCCC;
+  --color-gray-light: #CCCCCC;
+  --color-gray: #878787
 }
 
 :root * {

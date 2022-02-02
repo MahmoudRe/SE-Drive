@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as NetworkSVG } from "../assets/network.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
+import Spinner from "../components/Spinner";
 import "../libs/advance-file-input.css";
 
 function ConnectionPage() {
   const [data, setData] = useState("");
+  const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
     new AdvanceFileInput({
@@ -25,7 +27,7 @@ function ConnectionPage() {
 
   return (
     <main>
-      <div className="sub-header">
+      <div className="sub-header" style={{marginBottom: '2rem'}}>
         <NetworkSVG />
         <h2> Connect to Fabric's network... </h2>
       </div>
@@ -37,6 +39,7 @@ function ConnectionPage() {
         </button>
         <p className="OR"> OR </p>
         <div style={{position: 'relative'}}>
+          {showSpinner && <Spinner floating overlayColor={'white'} overlayOpacity={.8}/>}
           <div>
             <label className="label">Connection profile</label>
             <input type="file" accept="application/json" name="connection" id="connection-config" />
@@ -46,14 +49,16 @@ function ConnectionPage() {
               shell.openExternal(e.target.href);
             }}> learn more! </a></p>
           </div>
-          {data && 
+          {data && !showSpinner && 
             <button 
               style={{position: 'absolute'}}
               onClick={() => {
-                setTimeout(() => {
+                setShowSpinner(true)
+                setTimeout(async () => {
                   const { ipcRenderer } = window.require("electron");
-                  ipcRenderer.invoke("connect", data);
-                },400)
+                  await ipcRenderer.invoke("connect", data);
+                  setShowSpinner(false)
+                }, 1400)
               }}>
               connect →
             </button>

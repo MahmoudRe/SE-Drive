@@ -59,5 +59,5 @@ ipcMain.handle('evaluate-transaction', async (event, args) => {
 
 ipcMain.handle('connect', async (event, data) => {
   fs.writeFileSync('connection.json', data);
-  Chaincode.connect();
+  return Chaincode.connect();
 })
