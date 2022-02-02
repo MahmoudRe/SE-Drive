@@ -3,10 +3,6 @@ import logo from './logo.svg';
 import { genSecretKey, encrypt, decrypt, buildIndex, trapdoor } from 'searchable-encryption';
 import './App.css';
 
-function divideSemgents(str) {
-  return str.split('\n\n')
-}
-
 function App() {
   const [secret, setSecret] = useState("")
   const [plainText, setPlainText] = useState("")
@@ -14,6 +10,24 @@ function App() {
   const [search, setSearch] = useState("")
 
   const [secretKey, setSecretKey] = useState(null);
+
+  const store = async () => {
+    const { ipcRenderer } = window.require('electron');
+    const data = {};
+
+    //split textual contents to paragraphs (segments)
+    let segments = plainText.split('\n\n');
+    data.segments = segments.map(e => ({ pointer: crypto.randomUUID(), data: e }))
+
+    //build index and encrypt segments
+    data.indexTable = buildIndex(segments, secretKey.key);
+    data.segments = data.segments.map(async ({pointer, data}) => ({pointer: pointer, data: await encrypt(data, secretKey)}))
+    data.segments = await Promise.all(data.segments);
+    data.indexTable = await data.indexTable;
+    data.indexTable = Object.entries(data.indexTable).map(([key, value]) => ({ hash: key, pointers: value }))
+    
+    await ipcRenderer.invoke('submit-transaction', ['storeJSON', JSON.stringify(data.segments), JSON.stringify(data.indexTable)])
+  }
 
   return (
     <div className="App">
@@ -38,27 +52,7 @@ function App() {
           <label htmlFor="ciphertext">Result: Cipher Text</label>
           <textarea type="text" id="ciphertext" value={cipherText} onChange={e => setCipherText(e.target.value)}/>
         </div>
-        <button type="button" onClick={async e => { 
-          const { ipcRenderer } = window.require('electron');
-          const data = {};
-
-          let segments = divideSemgents(plainText);
-          segments = segments.map(e => ({pointer: crypto.randomUUID(), data: e}))
-
-          let indices = buildIndex(segments, secretKey.key);
-          
-          segments.forEach(async e => {
-            let value = await encrypt(e.data, secretKey)
-            ipcRenderer.invoke('submit-transaction', ['storeEncryptedSegment', e.pointer, value])
-          });
-
-          indices = await indices;
-          
-          data.indices = Object.entries(indices).map(([key, value]) => ({hash: key, pointers: value}))
-          ipcRenderer.invoke('submit-transaction', ['addIndicesJSON', JSON.stringify(data.indices)])
-          
-          // let res = await ipcRenderer.invoke('submit-transaction', ['createJSON', JSON.stringify(data.segments), JSON.stringify(data.indices)])          
-        }}> Encrypt</button>
+        <button type="button" onClick={store}> Store </button>
 
         <div className="form-item">
           <label htmlFor="search">Search</label>
