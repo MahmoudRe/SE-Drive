@@ -28,6 +28,7 @@ export default class AdvanceFileInput {
      *                                                                          the function is loaded as Promise function to block appending the image into the DOM untill this function is resolved, 
      *                                                                          the created image element is passed as the first argument (to be used only with 'externalPreviewWrapper' or 'withPreview' option).
      * @param {(files:FileList) => {}} config.onFileAdded (optional) Callback that called when a new file(s) has been dropped/added, with FileList obj as the first argument.
+     * @param {(files:FileList) => {}} config.onFileRemoved (optional) Callback that called when a new file(s) has been removed, with removed file as the first argument.
      */
     constructor(config = {}) {
         let { 
@@ -38,6 +39,7 @@ export default class AdvanceFileInput {
             maxFileSize = 3e+6,             //size in bytes
             beforeLoadingPreview = () => {},
             onFileAdded = () => {},
+            onFileRemoved = () => {}
         } = config;
 
         let droppedFilesMap = new Map();   //in case of multiple-files
@@ -101,7 +103,7 @@ export default class AdvanceFileInput {
         if (withAnimation) cloudIcon.classList.add('--animate');
         if (!input.multiple) Object.assign(cloudIcon.style, { height: '35px', transform: 'scale(1.1)' });
 
-        let dragText = parseElement('<p> Drag you connection profile here or <a> browse </a> </p>');
+        let dragText = parseElement('<p> Drag your network connection.json file or <a> browse </a> </p>');
         label.appendChild(dragText);
 
 
@@ -357,10 +359,11 @@ export default class AdvanceFileInput {
                         name: newFile.name,
                         type: newFile.type,
                         status: bytesToString(newFile.size),
-                        onRemove: () => {
+                        onRemove: (file) => {
                             input.value = "";
                             dragText.style.display = 'block';
                             if (externalPreviewWrapper) externalPreviewWrapper.innerHTML = previousImgHTML || "";
+                            onFileRemoved(file)
                         },
                         animate
                     });
@@ -463,8 +466,10 @@ export default class AdvanceFileInput {
                     <div class="file-card__icon">
                         ${ getFileIcon(type) }
                     </div>
-                    <p class="file-card__name">${name}</p>
-                    <p class="file-card__status">${status}</p>
+                    <div>
+                        <p class="file-card__name">${name}</p>
+                        <p class="file-card__status">${status}</p>
+                    </div>
                     <div class="file-card__remove advance-file-input__remove-btn">
                         <svg width="20px" height="22px" viewBox="0 0 20 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>Remove file</title>
@@ -478,6 +483,7 @@ export default class AdvanceFileInput {
             );
 
             fileCard.querySelector('.file-card__remove').addEventListener('click', (e) => {
+                const removedFile = droppedFilesMap.get(id);
                 droppedFilesMap.delete(id);
                 errorDiv.classList.add('hide');
                 errorDiv.style.display = 'grid';
@@ -495,7 +501,7 @@ export default class AdvanceFileInput {
 
                 function removeCard() {
                     fileCard.remove();
-                    onRemove();
+                    onRemove(removedFile);
                 }
             });
 
@@ -718,6 +724,17 @@ function getFileIcon(type) {
                 <path d="M5.65714286,0 L26.3428571,0 C29.4857143,0 32,2.60740741 32,5.86666667 L32,26.1333333 C32,29.3925926 29.4857143,32 26.3428571,32 L5.65714286,32 C2.51428571,32 0,29.3925926 0,26.1333333 L0,5.86666667 C0,2.60740741 2.51428571,0 5.65714286,0 Z" id="Path" fill="#727272"></path>
                 <path fill="#FFF" transform="translate(14.080000, 0.000000)" d="M3.84,17.28 L3.84,23.68 L0,23.68 L0,17.28 L3.84,17.28 Z M3.2,20.48 L0.64,20.48 L0.64,23.04 L3.2,23.04 L3.2,20.48 Z M1.92,11.52 L1.92,13.44 L3.84,13.44 L3.84,15.36 L1.92,15.36 L1.92,13.44 L0,13.44 L0,11.52 L1.92,11.52 Z M0,9.6 L0,7.68 L1.92,7.68 L1.92,9.6 L3.84,9.6 L3.84,11.52 L1.92,11.52 L1.92,9.6 L0,9.6 Z M3.84,5.76 L3.84,7.68 L1.92,7.68 L1.92,5.76 L3.84,5.76 Z M1.92,3.84 L1.92,5.76 L0,5.76 L0,3.84 L1.92,3.84 Z M3.84,1.92 L3.84,3.84 L1.92,3.84 L1.92,1.92 L3.84,1.92 Z M1.92,0 L1.92,1.92 L0,1.92 L0,0 L1.92,0 Z" id="Combined-Shape"></path>
             </svg>`;
+
+    if(type.match(/json/g))
+        return `
+        <svg  width="32px" height="32px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" style="enable-background:new 0 0 56 56" xml:space="preserve">
+            <path style="fill:#e2ecf1" d="M36.985 0H7.963C7.155 0 6.5.655 6.5 1.926V55c0 .345.655 1 1.463 1h40.074c.808 0 1.463-.655 1.463-1V12.978c0-.696-.093-.92-.257-1.085L37.607.257C37.442.093 37.218 0 36.985 0z"/><path style="fill:#d9d7ca" d="M37.5.151V12h11.849z"/>
+            <path style="fill:var(--color-primary)" d="M48.037 56H7.963c-.808 0-1.463-.655-1.463-1.463V39h43v15.537c0 .808-.655 1.463-1.463 1.463z"/>
+            <path style="fill:#fff" d="M17.021 42.719v7.848c0 .474-.087.873-.26 1.196s-.405.583-.697.779-.627.333-1.005.41c-.378.077-.768.116-1.169.116-.2 0-.436-.021-.704-.062s-.547-.104-.834-.191-.563-.185-.827-.294-.487-.232-.67-.369l.697-1.107c.091.063.221.13.39.198s.354.132.554.191.41.111.629.157.424.068.615.068c.483 0 .868-.094 1.155-.28s.439-.504.458-.95v-7.711h1.668zM25.184 50.238c0 .364-.075.718-.226 1.06s-.362.643-.636.902-.61.467-1.012.622-.856.232-1.367.232c-.219 0-.444-.012-.677-.034s-.467-.062-.704-.116c-.237-.055-.463-.13-.677-.226s-.398-.212-.554-.349l.287-1.176c.128.073.289.144.485.212s.398.132.608.191.419.107.629.144.405.055.588.055c.556 0 .982-.13 1.278-.39s.444-.645.444-1.155c0-.31-.104-.574-.314-.793s-.472-.417-.786-.595-.654-.355-1.019-.533-.706-.388-1.025-.629-.583-.526-.793-.854-.314-.738-.314-1.23c0-.446.082-.843.246-1.189s.385-.641.663-.882.602-.426.971-.554.759-.191 1.169-.191c.419 0 .843.039 1.271.116s.774.203 1.039.376c-.055.118-.118.248-.191.39s-.142.273-.205.396-.118.226-.164.308-.073.128-.082.137c-.055-.027-.116-.063-.185-.109s-.166-.091-.294-.137-.296-.077-.506-.096-.479-.014-.807.014c-.183.019-.355.07-.52.157s-.31.193-.438.321-.228.271-.301.431-.109.313-.109.458c0 .364.104.658.314.882s.47.419.779.588.647.333 1.012.492.704.354 1.019.581.576.513.786.854.318.781.318 1.319zM35.082 47.914c0 .848-.107 1.595-.321 2.242s-.511 1.185-.889 1.613-.82.752-1.326.971-1.06.328-1.661.328-1.155-.109-1.661-.328-.948-.542-1.326-.971-.675-.966-.889-1.613-.321-1.395-.321-2.242.107-1.593.321-2.235.511-1.178.889-1.606.82-.754 1.326-.978 1.06-.335 1.661-.335 1.155.111 1.661.335.948.549 1.326.978.675.964.889 1.606.321 1.387.321 2.235zm-4.238 3.815c.337 0 .658-.066.964-.198s.579-.349.82-.649.431-.695.567-1.183.21-1.082.219-1.784c-.009-.684-.08-1.265-.212-1.743s-.314-.873-.547-1.183-.497-.533-.793-.67-.608-.205-.937-.205c-.337 0-.658.063-.964.191s-.579.344-.82.649-.431.699-.567 1.183c-.137.483-.21 1.075-.219 1.777.009.684.08 1.267.212 1.75s.314.877.547 1.183.497.528.793.67.609.212.937.212zM44.68 42.924V53h-1.668l-3.951-6.945V53h-1.668V42.924h1.668l3.951 6.945v-6.945h1.668z"/>
+            <path style="fill:var(--color-primary)" d="M19.5 19v-4c0-.551.448-1 1-1 .553 0 1-.448 1-1s-.447-1-1-1c-1.654 0-3 1.346-3 3v4c0 1.103-.897 2-2 2-.553 0-1 .448-1 1s.447 1 1 1c1.103 0 2 .897 2 2v4c0 1.654 1.346 3 3 3 .553 0 1-.448 1-1s-.447-1-1-1c-.552 0-1-.449-1-1v-4c0-1.2-.542-2.266-1.382-3 .84-.734 1.382-1.8 1.382-3z"/>
+            <circle style="fill:var(--color-primary)" cx="27.5" cy="18.5" r="1.5"/>
+            <path style="fill:var(--color-primary)" d="M39.5 21c-1.103 0-2-.897-2-2v-4c0-1.654-1.346-3-3-3-.553 0-1 .448-1 1s.447 1 1 1c.552 0 1 .449 1 1v4c0 1.2.542 2.266 1.382 3-.84.734-1.382 1.8-1.382 3v4c0 .551-.448 1-1 1-.553 0-1 .448-1 1s.447 1 1 1c1.654 0 3-1.346 3-3v-4c0-1.103.897-2 2-2 .553 0 1-.448 1-1s-.447-1-1-1zM27.5 24c-.553 0-1 .448-1 1v3c0 .552.447 1 1 1s1-.448 1-1v-3c0-.552-.447-1-1-1z"/>
+        </svg>`;
 
     //fallback icon 
     return '';

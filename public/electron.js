@@ -1,5 +1,6 @@
 const path = require('path');
 const Chaincode = require("./chaincode");
+const fs = require('fs');
 const { app, BrowserWindow } = require('electron');
 const { ipcMain } = require('electron');
 
@@ -30,7 +31,6 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
-  Chaincode.connect();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -55,4 +55,9 @@ ipcMain.handle('submit-transaction', async (event, args) => {
 
 ipcMain.handle('evaluate-transaction', async (event, args) => {
   return Chaincode.contract.evaluateTransaction(...args);
+})
+
+ipcMain.handle('connect', async (event, data) => {
+  fs.writeFileSync('connection.json', data);
+  Chaincode.connect();
 })

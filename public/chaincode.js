@@ -27,7 +27,7 @@ class Chaincode {
     const wallet = await Wallets.newFileSystemWallet(walletPath);
 
     // Connect gateway to our peer node.
-    const connectionProfilePath = path.resolve(__dirname, ".", "connection.json");
+    const connectionProfilePath = path.resolve(__dirname, "..", "connection.json");
     const connectionProfile = JSON.parse(fs.readFileSync(connectionProfilePath, "utf8"));
 
     // eslint-disable-line @typescript-eslint/no-unsafe-assignment

@@ -3,7 +3,10 @@
 
 :root {
   font-size: 10px;
-  
+  --color-primary: #009FDA;
+  --color-primary-light: hsl(196, 100%, 50%);
+  --color-primary-dark: #2c8caf;
+  --color-light-gray: #CCCCCC;
 }
 
 :root * {
@@ -23,9 +26,6 @@ body {
   background-image:
     linear-gradient(to right, #f1f1f1 1px, transparent 1px),
     linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
-  
-  --color-primary: #009FDA;
-  --color-light-gray: #CCCCCC;
 }
 
 code {

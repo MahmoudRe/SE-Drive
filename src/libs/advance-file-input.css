@@ -38,6 +38,11 @@
 .advance-file-input.--dragover-sortable .preview-container .preview-card:hover .preview-card__tooltip {
   display: none;
 }
+
+.advance-file-input + .error + p.help-text {
+  margin: .1rem 0 1rem;
+}
+
 .advance-file-input label {
   margin: 0;
   grid-row: 2;
@@ -83,7 +88,6 @@
 }
 .advance-file-input .files-container .file-card {
   display: grid;
-  grid-template-rows: 1fr auto;
   grid-template-columns: auto 1fr auto;
   border-radius: 4px;
   background: white;
