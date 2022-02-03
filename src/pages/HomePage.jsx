@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import HomeIcon from "../assets/home.png";
 import SearchIcon from "../assets/search.png";
-import {ReactComponent as BookSVG} from "../assets/book.svg";
+import { ReactComponent as BookSVG } from "../assets/book.svg";
 import "../libs/advance-file-input.css";
 
 const styleCard = {
@@ -17,11 +17,10 @@ const styleCard = {
   justifyContent: "center",
   fontSize: "4.5rem",
   fontWeight: "bold",
-  color: "black"
-}
+  color: "black",
+};
 
 function HomePage(props) {
-
   useEffect(() => {
     document.documentElement.style.setProperty("--color-primary", "#EA8341");
     document.documentElement.style.setProperty("--color-primary-light", "#F0A513");
@@ -33,16 +32,31 @@ function HomePage(props) {
   return (
     <main>
       <div className="sub-header" style={{ marginBottom: "2rem" }}>
-        <img src={HomeIcon} alt="home page icon" width={35} style={{ margin: "auto", marginBottom: "15px"}} />
+        <img
+          src={HomeIcon}
+          alt="home page icon"
+          width={35}
+          style={{ margin: "auto", marginBottom: "15px" }}
+        />
         <h2> Welcome Home! </h2>
       </div>
-      <section className="either-area" style={{ alignItems: "center" }} onClick={() => { props.setPageCount(props.pageCount + 1)}}>
-        <button style={styleCard}>
+      <section className="either-area" style={{ alignItems: "center" }}>
+        <button
+          style={styleCard}
+          onClick={() => {
+            props.setPageCount(props.pageCount + 1);
+          }}
+        >
           <BookSVG width={60} />
           Store
         </button>
-        <button style={styleCard} onClick={() => { console.log(props.pageCount + 2); props.setPageCount(props.pageCount + 3)}}>
-          <img src={SearchIcon} alt="search page" width={65}/>
+        <button
+          style={styleCard}
+          onClick={() => {
+            props.setPageCount(props.pageCount + 2);
+          }}
+        >
+          <img src={SearchIcon} alt="search page" width={65} />
           Search
         </button>
       </section>

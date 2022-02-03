@@ -74,7 +74,7 @@ function ConnectionPage(props) {
             <label className="label">Add Connection Profile</label>
             <input type="file" accept="application/json" name="connection" id="connection-config" />
             <p className="help-text">
-              Connection profile is used to get access to the network;{" "}
+              Connection profile is used to get access to the network;
               <a
                 href="https://github.com/MahmoudRe/searchable-encryption"
                 onClick={(e) => {
