@@ -5,17 +5,17 @@ import { ReactComponent as BookSVG } from "../assets/book.svg";
 import "../libs/advance-file-input.css";
 
 const styleCard = {
-  width: "30rem",
-  height: "15rem",
-  padding: "3rem 5rem",
+  width: "25rem",
+  height: "13rem",
+  padding: "2rem 3rem",
   backgroundColor: "var(--color-primary-bg)",
-  border: "3px dashed var(--color-primary)",
+  border: "3px solid var(--color-primary)",
   borderRadius: "10px",
   display: "flex",
   gap: "1.5rem",
   alignItems: "center",
   justifyContent: "center",
-  fontSize: "4.5rem",
+  fontSize: "3.5rem",
   fontWeight: "bold",
   color: "black",
 };
@@ -44,7 +44,7 @@ function HomePage(props) {
       </div>
       <section className="either-area" style={{ alignItems: "center" }}>
         <button
-          style={styleCard}
+          style={{ ...styleCard, backgroundColor: "#FFDCE3", border: "3px solid #DF2549" }}
           onClick={() => {
             props.setPageCount(props.pageCount + 1);
           }}
@@ -53,7 +53,7 @@ function HomePage(props) {
           Store
         </button>
         <button
-          style={styleCard}
+          style={{...styleCard, backgroundColor: "#D8D9ED", border: "3px solid #4345CF" }}
           onClick={() => {
             props.setPageCount(props.pageCount + 2);
           }}

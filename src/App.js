@@ -27,9 +27,9 @@ function App() {
 
   const props = { user, pageCount, setPageCount, nextBtn };
   const pages = [
-    <ConnectionPage {...props} />,
     <KeyPage {...props} />,
     <RegisterPage {...props} />,
+    <ConnectionPage {...props} />,
     <HomePage {...props} />,
     <StoreTextPage {...props} />,
     <SearchPage {...props} />,
