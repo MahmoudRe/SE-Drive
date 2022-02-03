@@ -27,6 +27,8 @@ function HomePage(props) {
     document.documentElement.style.setProperty("--color-primary-dark", "#E1464C");
     document.documentElement.style.setProperty("--color-primary-bg", "#FFFBF3");
     document.documentElement.style.setProperty("--color-primary-bg-tint", "#F8EBC3");
+
+    props.nextBtn.setShow(false); // [TEMP FIX] this is done in the previous page, but currently it does't work.
   }, []);
 
   return (

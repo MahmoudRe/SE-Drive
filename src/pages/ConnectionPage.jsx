@@ -41,8 +41,8 @@ function ConnectionPage(props) {
           const { ipcRenderer } = window.require("electron");
           await ipcRenderer.invoke("connect", data);
           setShowSpinner(false);
-          props.setPageCount(props.pageCount + 1);
           props.nextBtn.setShow(false);
+          props.setPageCount(props.pageCount + 1);
         }, 1400);
       }
       props.nextBtn.setCallback(() => cb)
@@ -74,7 +74,7 @@ function ConnectionPage(props) {
             <label className="label">Add Connection Profile</label>
             <input type="file" accept="application/json" name="connection" id="connection-config" />
             <p className="help-text">
-              Connection profile is used to get access to the network;
+              Connection profile is used to get access to the network; &nbsp;
               <a
                 href="https://github.com/MahmoudRe/searchable-encryption"
                 onClick={(e) => {

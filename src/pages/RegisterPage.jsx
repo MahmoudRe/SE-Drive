@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { genSecretKey } from "searchable-encryption";
 import { ReactComponent as IdCardSVG } from "../assets/id-card.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
@@ -137,7 +136,7 @@ function RegisterPage(props) {
                   shell.openExternal(e.target.href);
                 }}
               >
-                check this link for help!
+                Check this link for help!
               </a>
             </p>
           </div>

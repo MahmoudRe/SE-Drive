@@ -9,7 +9,7 @@ function RegistrationPage(props) {
   const [data, setData] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSpinnerGen, setShowSpinnerGen] = useState(false);
-  const [passphrase, setPassphrase] = useState(undefined);
+  const [passphrase, setPassphrase] = useState("");
 
   useEffect(() => {
     document.documentElement.style.setProperty("--color-primary", "#E8BB1A");
@@ -42,8 +42,8 @@ function RegistrationPage(props) {
         setTimeout(async () => {
           // const { ipcRenderer } = window.require("electron");
           // await ipcRenderer.invoke("connect", data);
-          props.setPageCount(props.pageCount + 1);
           setShowSpinner(false);
+          props.setPageCount(props.pageCount + 1);
         }, 1400);
       }
       props.nextBtn.setCallback(() => cb)
@@ -57,8 +57,8 @@ function RegistrationPage(props) {
     setTimeout(async () => {
       const keyObj = await genSecretKey(passphrase);
       props.user.setKeyObj(keyObj);
-      props.setPageCount(props.pageCount + 1);
       setShowSpinnerGen(false);
+      props.setPageCount(props.pageCount + 1);
     }, 1400)
   }
 
