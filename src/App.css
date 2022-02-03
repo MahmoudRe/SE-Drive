@@ -40,7 +40,7 @@ p {
 
 .either-area {
   display: grid;
-  grid-template-columns: minmax(20rem, auto) 1fr auto;
+  grid-template-columns: minmax(20rem, auto) min-content 1fr;
   gap: 3rem;
 }
 
@@ -121,7 +121,7 @@ button.back-button:hover svg {
 }
 
 .advance-file-input {
-  width: 100%;
+  width: max(100%, 300px);
   height: 10rem;
   border-radius: 7px;
   align-items: center;

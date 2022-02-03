@@ -3,7 +3,6 @@ import { ReactComponent as NetworkSVG } from "../assets/network.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
 import "../libs/advance-file-input.css";
-import userEvent from "@testing-library/user-event";
 
 function ConnectionPage(props) {
   const [data, setData] = useState("");

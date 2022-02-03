@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { genSecretKey } from "searchable-encryption";
-import { ReactComponent as IdCardSVG } from "../assets/id-card.svg";
+import { ReactComponent as KeySVG } from "../assets/key.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
 import "../libs/advance-file-input.css";
@@ -12,14 +12,14 @@ function RegistrationPage(props) {
   const [passphrase, setPassphrase] = useState(undefined);
 
   useEffect(() => {
-    document.documentElement.style.setProperty("--color-primary", "#83BDBD");
-    document.documentElement.style.setProperty("--color-primary-light", "#83BDBD");
+    document.documentElement.style.setProperty("--color-primary", "#E8BB1A");
+    document.documentElement.style.setProperty("--color-primary-light", "#FDCC1D");
     document.documentElement.style.setProperty("--color-primary-dark", "#83BDBD");
-    document.documentElement.style.setProperty("--color-primary-bg", "#e1f3f3");
-    document.documentElement.style.setProperty("--color-primary-bg-tint", "#cfe9e9");
+    document.documentElement.style.setProperty("--color-primary-bg", "#FFF7E4");
+    document.documentElement.style.setProperty("--color-primary-bg-tint", "#F8EBC3");
 
     new AdvanceFileInput({
-      selector: "#connection-config",
+      selector: "#key-object-file",
       dragText: "Drag your key file here",
       onFileAdded: (fileList) => {
         let file = fileList[0];
@@ -40,8 +40,8 @@ function RegistrationPage(props) {
       const cb = () => {
         setShowSpinner(true);
         setTimeout(async () => {
-          const { ipcRenderer } = window.require("electron");
-          await ipcRenderer.invoke("connect", data);
+          // const { ipcRenderer } = window.require("electron");
+          // await ipcRenderer.invoke("connect", data);
           props.setPageCount(props.pageCount + 1);
           setShowSpinner(false);
         }, 1400);
@@ -65,7 +65,7 @@ function RegistrationPage(props) {
   return (
     <main>
       <div className="sub-header" style={{ marginBottom: "2rem" }}>
-        <IdCardSVG />
+        <KeySVG style={{width: 30}}/>
         <h2> Generate an account.. I mean a secret key! </h2>
       </div>
       <section className="either-area">
@@ -108,8 +108,8 @@ function RegistrationPage(props) {
         <div style={{ position: "relative" }}>
           {showSpinner && <Spinner floating overlayColor={"white"} overlayOpacity={0.8} />}
           <div>
-            <label className="label">Are you a registered user? Add your Secret Key</label>
-            <input type="file" accept="application/json" name="connection" id="connection-config" />
+            <label className="label">Are you a registered user? Add Secret Key</label>
+            <input type="file" accept="application/json" name="connection" id="key-object-file" />
             <p className="help-text">
               Your secret key is kept locally and used for encryption; &nbsp;
               <a

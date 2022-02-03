@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ConnectionPage from "./pages/ConnectionPage";
-import RegistrationPage from "./pages/RegistrationPage";
+import RegisterPage from "./pages/RegisterPage";
+import KeyPage from "./pages/KeyPage";
 import { ReactComponent as LeftArrowSVG } from "./assets/left-arrow.svg";
 import "./App.css";
 
@@ -18,12 +19,13 @@ function App() {
     setCallback,
   };
 
-  const [pageCount, setPageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(2);
 
   const props = { user, pageCount, setPageCount, nextBtn }
   const pages = [
     <ConnectionPage {...props} />,
-    <RegistrationPage {...props} />,
+    <KeyPage {...props} />,
+    <RegisterPage {...props} />,
   ];
 
   return (
