@@ -121,6 +121,18 @@ button.back-button:hover svg {
   margin-left: -5px;
 }
 
+.back-home {
+  position: absolute;
+  right: 0;
+  top: 3.7rem;
+  cursor: pointer;
+  transition: all .3s easy;
+}
+
+.back-home:hover {
+  transform: scale(1.05);
+}
+
 .OR {
   place-self: center;
   font-weight: 600;

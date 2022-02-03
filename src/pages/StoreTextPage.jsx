@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import HomeIcon from "../assets/home.png";
-import SearchIcon from "../assets/search.png";
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import "../libs/advance-file-input.css";
 
@@ -21,7 +19,7 @@ function StoreTextPage(props) {
       </div>
       <textarea
         style={{
-          height: "80%",
+          height: "75%",
           width: "100%",
           border: "2px solid var(--color-primary)",
           borderRadius: 7,

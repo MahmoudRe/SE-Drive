@@ -59,7 +59,7 @@ function RegisterPage(props) {
           const { ipcRenderer } = window.require("electron");
           ipcRenderer.invoke("add-peer", [peerId, peerCA])
             .then(() => {
-              props.nextBtn.show(false);
+              props.nextBtn.setShow(false);
               setShowSpinner(false);
               props.setPageCount(props.pageCount + 1);
             })

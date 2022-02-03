@@ -41,7 +41,7 @@ function HomePage(props) {
           <BookSVG width={60} />
           Store
         </button>
-        <button style={styleCard} onClick={() => { props.setPageCount(props.pageCount + 2)}}>
+        <button style={styleCard} onClick={() => { console.log(props.pageCount + 2); props.setPageCount(props.pageCount + 3)}}>
           <img src={SearchIcon} alt="search page" width={65}/>
           Search
         </button>
