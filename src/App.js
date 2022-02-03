@@ -50,7 +50,7 @@ function App() {
         {nextBtn.show && (
           <button
             className="next-button --hand"
-            // onClick={nextBtn.callback}
+            onClick={() => nextBtn.callback()}
           >
             <span style={{ marginTop: "0.7rem" }}>Proceed</span>
             <LeftArrowSVG style={{ transform: "rotate(180deg)" }} />

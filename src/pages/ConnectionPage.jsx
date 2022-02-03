@@ -29,13 +29,14 @@ function ConnectionPage(props) {
       },
       onFileRemoved: () => {
         setData("");
+        props.nextBtn.setShow(false);
       },
     });
   }, []);
 
   useEffect(() => {
     if(data && !showSpinner) {
-      props.nextBtn.setCallback(() => {
+      const cb = () => {
         setShowSpinner(true);
         setTimeout(async () => {
           const { ipcRenderer } = window.require("electron");
@@ -44,10 +45,11 @@ function ConnectionPage(props) {
           props.setPageCount(props.pageCount + 1);
           props.nextBtn.setShow(false);
         }, 1400);
-      })
+      }
+      props.nextBtn.setCallback(() => cb)
       props.nextBtn.setShow(true);
     }
-  }, [props, data, showSpinner]);
+  }, [data, showSpinner]);
 
   return (
     <main>

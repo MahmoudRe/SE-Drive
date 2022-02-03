@@ -35,6 +35,22 @@ function RegistrationPage(props) {
     });
   }, []);
 
+  useEffect(() => {
+    if(data && !showSpinner) {
+      const cb = () => {
+        setShowSpinner(true);
+        setTimeout(async () => {
+          const { ipcRenderer } = window.require("electron");
+          await ipcRenderer.invoke("connect", data);
+          props.setPageCount(props.pageCount + 1);
+          setShowSpinner(false);
+        }, 1400);
+      }
+      props.nextBtn.setCallback(() => cb)
+      props.nextBtn.setShow(true);
+    }
+  }, [data, showSpinner]);
+
   const onSubmitGenKey = (e) => {
     e.preventDefault()
     setShowSpinnerGen(true)
@@ -108,21 +124,6 @@ function RegistrationPage(props) {
               </a>
             </p>
           </div>
-          {data && !showSpinner && (
-            <button
-              style={{ position: "absolute" }}
-              onClick={() => {
-                setShowSpinner(true);
-                setTimeout(async () => {
-                  const { ipcRenderer } = window.require("electron");
-                  await ipcRenderer.invoke("connect", data);
-                  setShowSpinner(false);
-                }, 1400);
-              }}
-            >
-              Proceed →
-            </button>
-          )}
         </div>
       </section>
     </main>
