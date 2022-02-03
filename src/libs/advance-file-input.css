@@ -41,7 +41,6 @@
 
 .advance-file-input + .error + p.help-text {
   margin: .1rem 0 1rem;
-  color: var(--color-gray);
 }
 
 .advance-file-input label {

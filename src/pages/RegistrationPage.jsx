@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { genSecretKey } from "searchable-encryption";
 import { ReactComponent as IdCardSVG } from "../assets/id-card.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
 import "../libs/advance-file-input.css";
 
-function ConnectionPage() {
+function RegistrationPage(props) {
   const [data, setData] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
+  const [showSpinnerGen, setShowSpinnerGen] = useState(false);
+  const [passphrase, setPassphrase] = useState(undefined);
 
   useEffect(() => {
     document.documentElement.style.setProperty("--color-primary", "#83BDBD");
@@ -32,24 +35,59 @@ function ConnectionPage() {
     });
   }, []);
 
+  const onSubmitGenKey = (e) => {
+    e.preventDefault()
+    setShowSpinnerGen(true)
+    setTimeout(async () => {
+      const keyObj = await genSecretKey(passphrase);
+      props.user.setKeyObj(keyObj);
+      props.setPageCount(props.pageCount + 1);
+      setShowSpinnerGen(false);
+    }, 1400)
+  }
+
   return (
     <main>
       <div className="sub-header" style={{ marginBottom: "2rem" }}>
         <IdCardSVG />
-        <h2> Create an account.. I mean a secret key! </h2>
+        <h2> Generate an account.. I mean a secret key! </h2>
       </div>
       <section className="either-area">
-        <div>
-          <div className="form-field" style={{ width: "30vw" }}>
+        <form id="generate-key" style={{ position: "relative" }} onSubmit={onSubmitGenKey}>
+          {showSpinnerGen && <Spinner floating overlayColor={"white"} overlayOpacity={0.8} />}
+          <div className="form-field" style={{ width: "36vw" }}>
             <label htmlFor="name">Your Name / Nick Name</label>
-            <input type="text" name="name" id="name" />
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="What should we call you?"
+              value={props.user.name}
+              onChange={(e) => props.user.setName(e.target.value)}
+              required
+            />
           </div>
-          <div className="form-field" style={{ width: "30vw" }}>
-            <label htmlFor="name">Passphrase</label>
-            <input type="text" name="name" id="name" />
+          <div className="form-field" style={{ width: "36vw" }}>
+            <label htmlFor="passphrase">Passphrase</label>
+            <input
+              type="text"
+              name="name"
+              id="passphrase"
+              placeholder="Just type some random thoughts!  ^_^"
+              value={passphrase}
+              onChange={(e) => setPassphrase(e.target.value)}
+              required
+            />
+            <p style={{ width: "100%", marginBottom: 0, textAlign: "justify" }}>
+              The passphrase will be used in contracting your secret key, but it isn't only depends
+              on it, hence same passphrase won't generate the same key! Please preserve your key
+              securely for later use!
+            </p>
           </div>
-          <button onClick={() => alert("Your password is generaded")}>Generate Secret Key</button>
-        </div>
+          <button roll="submit" form="generate-key">
+            Generate Secret Key
+          </button>
+        </form>
         <p className="OR"> OR </p>
         <div style={{ position: "relative" }}>
           {showSpinner && <Spinner floating overlayColor={"white"} overlayOpacity={0.8} />}
@@ -57,7 +95,7 @@ function ConnectionPage() {
             <label className="label">Are you a registered user? Add your Secret Key</label>
             <input type="file" accept="application/json" name="connection" id="connection-config" />
             <p className="help-text">
-              Your secret key is kept locally and used for encryption; &nbsp; 
+              Your secret key is kept locally and used for encryption; &nbsp;
               <a
                 href="https://github.com/MahmoudRe/searchable-encryption"
                 onClick={(e) => {
@@ -91,4 +129,4 @@ function ConnectionPage() {
   );
 }
 
-export default ConnectionPage;
+export default RegistrationPage;

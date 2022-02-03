@@ -8,11 +8,12 @@ function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1000,
-    height: 600,
+    height: 675,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
     },
+    // titleBarStyle: 'hidden',
   });
 
   // and load the index.html of the app.

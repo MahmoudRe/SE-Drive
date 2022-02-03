@@ -15,6 +15,15 @@ header, .header {
   /* margin: auto; */
 }
 
+
+header h1 {
+  margin-bottom: 0;
+}
+
+p {
+  margin: .7rem 0 1rem;
+}
+
 .--color-primary-txt {
   color: var(--color-primary);
 }
@@ -66,8 +75,42 @@ button:active,
   box-shadow: 0 2px 5px -2px rgba(0, 0, 0, 0.3);
 }
 
+button.--hand {
+  all: unset;
+  font-family: 'Just Another Hand', cursive;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--color-gray-light);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 3rem;
+}
+
+button.next-button,
+button.back-button {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  background: none;
+  cursor: pointer;
+  transition: all 0.3 ease; 
+}
+
+button.next-button,
+button.next-button svg {
+  color: var(--color-primary);
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
+}
+
+button.back-button:hover,
+button.back-button:hover svg {
+  color: var(--color-primary);
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
+}
+
 .OR {
-  /* font-family: 'Overpass', cursive; */
   place-self: center;
   font-weight: 600;
   font-size: 4vw;
@@ -124,7 +167,6 @@ input[type="text"] {
   padding: .7rem;
   background-color: rgb(253, 253, 253);
 }
-
 
 @media (max-width: 850px) {
   .either-area {
