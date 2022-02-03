@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { encrypt, buildIndex } from 'searchable-encryption';
+import Spinner from '../components/Spinner';
 import { ReactComponent as BookSVG } from "../assets/book.svg";
+import { ReactComponent as DoneSVG } from "../assets/done.svg";
 import "../libs/advance-file-input.css";
 
 function StoreTextPage(props) {
@@ -13,11 +15,21 @@ function StoreTextPage(props) {
   }, []);
 
   const textarea = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const store = async () => {
+    setLoading(true);
+
     const { ipcRenderer } = window.require('electron');
     let plainText = textarea.current.value;
     const data = {};
+
+    if(!plainText) {
+      setLoading(false);
+      alert("Can't store empty data; please write something first!") 
+      return;
+    }
 
     //split textual contents to paragraphs (segments)
     let segments = plainText.split('\n\n');
@@ -31,13 +43,25 @@ function StoreTextPage(props) {
     data.indexTable = Object.entries(data.indexTable).map(([key, value]) => ({ hash: key, pointers: value }))
     
     await ipcRenderer.invoke('submit-transaction', ['storeJSON', JSON.stringify(data.segments), JSON.stringify(data.indexTable)])
+      .then(() => {
+        textarea.current.value = "";
+        setSuccess(true);
+        setTimeout(() => {
+          setLoading(false);
+          setSuccess(false);
+        }, 2500);
+      })
+      .catch(e => { 
+        setLoading(false);
+        alert('Something went wrong: ', e); 
+      })
   }
 
   return (
     <main style={{position: "relative"}}>
       <div className="sub-header">
         <BookSVG width={30} />
-        <h2> Store your private text securely... </h2>
+        <h2> Store your private text securely </h2>
       </div>
       <textarea
         style={{
@@ -49,8 +73,11 @@ function StoreTextPage(props) {
           fontFamily: "Roboto Condensed",
           padding: "1rem"
         }}
+        placeholder="Start typing here... "
         ref={textarea}
+        disabled={loading}
       />
+      { loading && <Spinner floating done={success} /> }
       <div
         style={{
           width: "100%",
@@ -69,7 +96,7 @@ function StoreTextPage(props) {
             text is segmented per paragraph.
           </span>
         </div>
-        <button onClick={store} style={{ width: "20rem", height: "5rem" }}>Store to ledger</button>
+        <button onClick={store} style={{ width: "20rem", height: "5rem" }} disabled={loading}>Store to ledger</button>
       </div>
     </main>
   );

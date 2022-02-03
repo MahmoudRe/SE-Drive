@@ -196,6 +196,7 @@ input[type="text"] {
 
 textarea {
   resize: none;
+  background-color: rgb(253, 253, 253);
 }
 
 textarea:focus {
