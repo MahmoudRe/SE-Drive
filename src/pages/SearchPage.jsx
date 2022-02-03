@@ -3,6 +3,7 @@ import { trapdoor, decrypt } from "searchable-encryption";
 import SearchIcon from "../assets/search.png";
 import NoResultsIllustration from "../assets/no-record.png";
 import SearchIllustration from "../assets/search-illustration.png";
+import Spinner from "../components/Spinner"
 import "../libs/advance-file-input.css";
 
 function SearchPage(props) {
@@ -16,13 +17,17 @@ function SearchPage(props) {
 
   const [keyword, setSearchKeyword] = useState("");
   const [result, setResult] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(null); //for real-time search
 
-  const search = async (e) => {
+  const search = async (query) => {
+    setLoading(true);
     const { ipcRenderer } = window.require("electron");
     let encryptedSegments = await ipcRenderer
-      .invoke("evaluate-transaction", ["search", await trapdoor(keyword, props.user.keyObj)])
+      .invoke("evaluate-transaction", ["search", await trapdoor(query, props.user.keyObj)])
       .catch((e) => {
         setResult([]);
+        setLoading(false);
         return null;
       });
 
@@ -36,6 +41,7 @@ function SearchPage(props) {
 
     Promise.all(result).then((e) => {
       setResult(e);
+      setLoading(false);
     });
   };
 
@@ -61,20 +67,37 @@ function SearchPage(props) {
             }}
             value={keyword}
             onChange={(e) => {
-              if (!e.target.value) setResult([]);
               setSearchKeyword(e.target.value);
+
+              if (!e.target.value) {
+                setResult([]);
+                clearTimeout(timeoutId);
+                setLoading(false);
+                return;
+              }
+
+              setLoading(true);
+
+              //real-time search with 1.5s delay
+              clearTimeout(timeoutId);
+              let timeoutIdLocal = setTimeout(() => {
+                search(e.target.value);
+              },  1500, [e.target.value])
+              setTimeoutId(timeoutIdLocal)
             }}
-            onClick={search}
           />
         </div>
       </div>
       <section
         className="search-results"
-        // style={{
-        //   //if the content fits the view, skip adding marginBottom to prevent unnecessary scrollbar
-        //   marginBottom: document.body.scrollHeight > document.body.clientHeight ? "5rem" : "0", 
-        // }}
+        style={{
+          //if the content fits the view, skip adding marginBottom to prevent unnecessary scrollbar
+          // marginBottom: document.body.scrollHeight > document.body.clientHeight ? "5rem" : "0", 
+          position: "relative",
+          minHeight: "80%"
+        }}
       >
+        {loading && <Spinner floating overlayColor="white" /> }
         {!!result.length && <h3> Results: </h3>}
         {!!result.length &&
           result.map((e, idx) => (
@@ -100,7 +123,7 @@ function SearchPage(props) {
               gap: "2rem",
             }}
           >
-            {!!keyword ? (
+            {!!keyword && !loading ? (
               <>
                 <img src={NoResultsIllustration} alt="no results found!" width="250" />
                 <p style={{ opacity: ".4", fontSize: "1.8rem" }}>
