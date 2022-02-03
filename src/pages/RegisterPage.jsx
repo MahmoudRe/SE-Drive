@@ -23,7 +23,7 @@ function RegisterPage(props) {
       dragText: "Drag \"Peer.id\" file here",
       onFileAdded: (fileList) => {
         let file = fileList[0];
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onloadend = function (e) {
           setPeerId(this.result);
         };
@@ -39,7 +39,7 @@ function RegisterPage(props) {
       dragText: "Drag \"Peer CA.id\" file here",
       onFileAdded: (fileList) => {
         let file = fileList[0];
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onloadend = function (e) {
           setPeerCA(this.result);
         };
@@ -108,7 +108,7 @@ function RegisterPage(props) {
           <div className="form-field" style={{ width: "36vw" }}>
             <label htmlFor="passphrase">Organisation</label>
             <input type="text" name="name" id="organization" placeholder="Org1" required />
-            <p style={{ width: "100%", marginBottom: 0, textAlign: "justify" }}>
+            <p style={{ width: "100%", marginBottom: 0 }}>
               The new user identity will be registered to this organization.
             </p>
           </div>
@@ -121,12 +121,11 @@ function RegisterPage(props) {
           {showSpinner && <Spinner floating overlayColor={"white"} overlayOpacity={0.8} />}
           <div>
             <label className="label">Peer Identity: "Peer.id"</label>
-            <input type="file" accept="application/json" name="connection" id="peer-id" />
-            
+            <input type="file" name="peer-id" id="peer-id" />
           </div>
           <div>
             <label className="label">Certificate Authority: "Peer CA.id"</label>
-            <input type="file" accept="application/json" name="connection" id="peer-ca" />
+            <input type="file" name="peer-ca" id="peer-ca" />
             <p className="help-text">
               Couldn't you find this file? &nbsp;
               <a

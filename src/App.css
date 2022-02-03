@@ -101,13 +101,23 @@ button.next-button svg {
   color: var(--color-primary);
   fill: var(--color-primary);
   stroke: var(--color-primary);
+  transition: all .3 ease;
+}
+
+button.next-button,
+button.next-button:hover svg {
+  color: var(--color-primary-dark);
+  fill: var(--color-primary-dark);
+  stroke: var(--color-primary-dark);
+  margin-right: -5px;
 }
 
 button.back-button:hover,
 button.back-button:hover svg {
-  color: var(--color-primary);
-  fill: var(--color-primary);
-  stroke: var(--color-primary);
+  color: var(--color-gray);
+  fill: var(--color-gray);
+  stroke: var(--color-gray);
+  margin-left: -5px;
 }
 
 .OR {

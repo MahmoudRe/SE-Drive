@@ -62,3 +62,9 @@ ipcMain.handle('connect', async (event, data) => {
   fs.writeFileSync('connection.json', data);
   return Chaincode.connect();
 })
+
+ipcMain.handle('add-peer', async (event, [peerId, peerCA]) => {
+  fs.writeFileSync('Wallet/Org1 Admin.id', peerId);
+  fs.writeFileSync('Wallet/Org1 CA Admin.id', peerCA);
+  return true;
+})
