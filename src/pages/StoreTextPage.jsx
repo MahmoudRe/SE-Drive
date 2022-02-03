@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import { encrypt, buildIndex } from 'searchable-encryption';
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import "../libs/advance-file-input.css";
 
@@ -10,6 +11,27 @@ function StoreTextPage(props) {
     document.documentElement.style.setProperty("--color-primary-bg", "#FFDCE3");
     document.documentElement.style.setProperty("--color-primary-bg-tint", "#FFC3CF");
   }, []);
+
+  const textarea = useRef(null);
+
+  const store = async () => {
+    const { ipcRenderer } = window.require('electron');
+    let plainText = textarea.current.value;
+    const data = {};
+
+    //split textual contents to paragraphs (segments)
+    let segments = plainText.split('\n\n');
+    data.segments = segments.map(e => ({ pointer: crypto.randomUUID(), data: e }))
+
+    //build index and encrypt segments
+    data.indexTable = buildIndex(data.segments, props.user.keyObj);
+    data.segments = data.segments.map(async ({pointer, data}) => ({pointer: pointer, data: await encrypt(data, props.user.keyObj)}))
+    data.segments = await Promise.all(data.segments);
+    data.indexTable = await data.indexTable;
+    data.indexTable = Object.entries(data.indexTable).map(([key, value]) => ({ hash: key, pointers: value }))
+    
+    await ipcRenderer.invoke('submit-transaction', ['storeJSON', JSON.stringify(data.segments), JSON.stringify(data.indexTable)])
+  }
 
   return (
     <main style={{position: "relative"}}>
@@ -27,6 +49,7 @@ function StoreTextPage(props) {
           fontFamily: "Roboto Condensed",
           padding: "1rem"
         }}
+        ref={textarea}
       />
       <div
         style={{
@@ -46,7 +69,7 @@ function StoreTextPage(props) {
             text is segmented per paragraph.
           </span>
         </div>
-        <button onClick={() => {}} style={{ width: "20rem", height: "5rem" }}>Store to ledger</button>
+        <button onClick={store} style={{ width: "20rem", height: "5rem" }}>Store to ledger</button>
       </div>
     </main>
   );

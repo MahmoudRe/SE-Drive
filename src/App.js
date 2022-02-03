@@ -23,7 +23,7 @@ function App() {
     setCallback,
   };
 
-  const [pageCount, setPageCount] = useState(5);
+  const [pageCount, setPageCount] = useState(0);
 
   const props = { user, pageCount, setPageCount, nextBtn };
   const pages = [
