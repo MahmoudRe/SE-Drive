@@ -59,8 +59,9 @@ function RegisterPage(props) {
           const { ipcRenderer } = window.require("electron");
           ipcRenderer.invoke("add-peer", [peerId, peerCA])
             .then(() => {
-              props.setPageCount(props.pageCount + 1);
+              props.nextBtn.show(false);
               setShowSpinner(false);
+              props.setPageCount(props.pageCount + 1);
             })
             .catch((e) => {
               let errorEl = Array.from(document.querySelectorAll('.advance-file-input + .error')).pop();
