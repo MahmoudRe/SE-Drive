@@ -6,7 +6,6 @@ import "../libs/advance-file-input.css";
 
 function RegisterPage(props) {
   const [peerId, setPeerId] = useState("");
-  const [peerCA, setPeerCA] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSpinnerReg, setShowSpinnerReg] = useState(false);
 
@@ -32,31 +31,15 @@ function RegisterPage(props) {
         setPeerId("");
       },
     });
-
-    new AdvanceFileInput({
-      selector: "#peer-ca",
-      dragText: "Drag \"Peer CA.id\" file here",
-      onFileAdded: (fileList) => {
-        let file = fileList[0];
-        let reader = new FileReader();
-        reader.onloadend = function (e) {
-          setPeerCA(this.result);
-        };
-        reader.readAsText(file);
-      },
-      onFileRemoved: () => {
-        setPeerCA("");
-      },
-    });
   }, []);
 
   useEffect(() => {
-    if (peerId && peerCA && !showSpinner) {
+    if (peerId && !showSpinner) {
       const cb = () => {
         setShowSpinner(true);
         setTimeout(async () => {
           const { ipcRenderer } = window.require("electron");
-          ipcRenderer.invoke("add-peer", [peerId, peerCA])
+          ipcRenderer.invoke("add-peer", [peerId])
             .then(() => {
               props.nextBtn.setShow(false);
               setShowSpinner(false);
@@ -76,7 +59,7 @@ function RegisterPage(props) {
       props.nextBtn.setCallback(() => cb);
       props.nextBtn.setShow(true);
     }
-  }, [peerId, peerCA, showSpinner]);
+  }, [peerId, showSpinner]);
 
   return (
     <main>
@@ -122,10 +105,6 @@ function RegisterPage(props) {
           <div>
             <label className="label">Peer Identity: "Peer.id"</label>
             <input type="file" name="peer-id" id="peer-id" />
-          </div>
-          <div>
-            <label className="label">Certificate Authority: "Peer CA.id"</label>
-            <input type="file" name="peer-ca" id="peer-ca" />
             <p className="help-text">
               Couldn't you find this file? &nbsp;
               <a

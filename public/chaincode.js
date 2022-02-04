@@ -33,7 +33,7 @@ class Chaincode {
     // eslint-disable-line @typescript-eslint/no-unsafe-assignment
     const connectionOptions = {
       wallet,
-      identity: "Org1 Admin",
+      identity: "AdminIdentity",
       discovery: { enabled: true, asLocalhost: true },
     };
     await this.gateway.connect(connectionProfile, connectionOptions);

@@ -7,7 +7,7 @@ const { ipcMain } = require('electron');
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 930,
+    width: 975,
     height: 675,
     webPreferences: {
       nodeIntegration: true,
@@ -63,8 +63,13 @@ ipcMain.handle('connect', async (event, data) => {
   return Chaincode.connect();
 })
 
-ipcMain.handle('add-peer', async (event, [peerId, peerCA]) => {
-  fs.writeFileSync('Wallet/Org1 Admin.id', peerId);
-  fs.writeFileSync('Wallet/Org1 CA Admin.id', peerCA);
+ipcMain.handle('add-peer', async (event, [peerId]) => {
+  fs.writeFileSync('Wallet/AdminIdentity.id', peerId);
+  return true;
+})
+
+ipcMain.handle('logout', async (event, args) => {
+  fs.writeFileSync('Wallet/AdminIdentity.id', "");
+  fs.writeFileSync('connection.json', "");
   return true;
 })
