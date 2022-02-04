@@ -107,7 +107,7 @@ function SearchPage(props) {
               dangerouslySetInnerHTML={{
                 __html: e.replace(
                   new RegExp(keyword, "gi"),
-                  `<span class="highlight"}>${keyword}</span>`
+                  '<span class="highlight"}>$&</span>' // $&: is the placeholder for the matched string
                 ),
               }}
             />
