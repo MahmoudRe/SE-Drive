@@ -14,7 +14,7 @@ function RegistrationPage(props) {
   useEffect(() => {
     document.documentElement.style.setProperty("--color-primary", "#E8BB1A");
     document.documentElement.style.setProperty("--color-primary-light", "#FDCC1D");
-    document.documentElement.style.setProperty("--color-primary-dark", "#83BDBD");
+    document.documentElement.style.setProperty("--color-primary-dark", "#EDBF1C");
     document.documentElement.style.setProperty("--color-primary-bg", "#FFF7E4");
     document.documentElement.style.setProperty("--color-primary-bg-tint", "#F8EBC3");
 

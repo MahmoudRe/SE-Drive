@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import HomeIcon from "../assets/home.png";
 import SearchIcon from "../assets/search.png";
-import { exportSecretKey } from "searchable-encryption"
+import { exportSecretKey } from "searchable-encryption";
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
+import { ReactComponent as LogoutSVG } from "../assets/logout.svg";
 import "../libs/advance-file-input.css";
 
 const styleCard = {
-  width: "29rem",
+  width: "27.25rem",
   height: "13rem",
   padding: "2rem 3rem",
   backgroundColor: "var(--color-primary-bg)",
@@ -35,6 +36,15 @@ function HomePage(props) {
 
   return (
     <main>
+      <LogoutSVG
+        width={60}
+        style={{ position: "absolute", top: "calc(4vh + 3rem)", right: "4%" }}
+        className="back-home"
+        onClick={() => {
+          //remove user data
+          props.setPageCount(0);
+        }}
+      />
       <div className="sub-header" style={{ marginBottom: "2rem" }}>
         <img
           src={HomeIcon}
@@ -55,7 +65,7 @@ function HomePage(props) {
           Store
         </button>
         <button
-          style={{...styleCard, backgroundColor: "#D8D9ED", border: "3px solid #4345CF" }}
+          style={{ ...styleCard, backgroundColor: "#D8D9ED", border: "3px solid #4345CF" }}
           onClick={() => {
             props.setPageCount(props.pageCount + 2);
           }}
@@ -64,18 +74,23 @@ function HomePage(props) {
           Search
         </button>
         <button
-          style={{...styleCard, backgroundColor: "#FFF7E4", border: "3px solid #E8BB1A" }}
+          style={{
+            ...styleCard,
+            backgroundColor: "#FFF7E4",
+            border: "3px solid #E8BB1A",
+            lineHeight: "1",
+          }}
           onClick={async () => {
             let exportedKey = await exportSecretKey(props.user.keyObj);
-            
+
             function download(content, fileName, contentType) {
-                let a = document.createElement("a");
-                let file = new Blob([content], {type: contentType});
-                a.href = URL.createObjectURL(file);
-                a.download = fileName;
-                a.click();
+              let a = document.createElement("a");
+              let file = new Blob([content], { type: contentType });
+              a.href = URL.createObjectURL(file);
+              a.download = fileName;
+              a.click();
             }
-            download(JSON.stringify(exportedKey), 'key.json', 'json/application');
+            download(JSON.stringify(exportedKey), "key.json", "json/application");
           }}
         >
           <KeySVG width={60} />

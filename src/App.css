@@ -63,7 +63,6 @@ button, .button {
 button:hover, 
 .button:hover {
   cursor: pointer;
-  background: var(--color-primary-light);
   padding: .7rem 3rem 1.3rem;
   transform: translateY(-3px);
   box-shadow: 0 5px 15px -2px rgba(0, 0, 0, 0.3);
