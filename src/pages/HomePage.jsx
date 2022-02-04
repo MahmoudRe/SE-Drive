@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import HomeIcon from "../assets/home.png";
 import SearchIcon from "../assets/search.png";
+import { exportSecretKey } from "searchable-encryption"
 import { ReactComponent as BookSVG } from "../assets/book.svg";
+import { ReactComponent as KeySVG } from "../assets/key.svg";
 import "../libs/advance-file-input.css";
 
 const styleCard = {
-  width: "25rem",
+  width: "29rem",
   height: "13rem",
   padding: "2rem 3rem",
   backgroundColor: "var(--color-primary-bg)",
@@ -42,7 +44,7 @@ function HomePage(props) {
         />
         <h2> Welcome Home! </h2>
       </div>
-      <section className="either-area" style={{ alignItems: "center" }}>
+      <section style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
         <button
           style={{ ...styleCard, backgroundColor: "#FFDCE3", border: "3px solid #DF2549" }}
           onClick={() => {
@@ -60,6 +62,24 @@ function HomePage(props) {
         >
           <img src={SearchIcon} alt="search page" width={65} />
           Search
+        </button>
+        <button
+          style={{...styleCard, backgroundColor: "#FFF7E4", border: "3px solid #E8BB1A" }}
+          onClick={async () => {
+            let exportedKey = await exportSecretKey(props.user.keyObj);
+            
+            function download(content, fileName, contentType) {
+                let a = document.createElement("a");
+                let file = new Blob([content], {type: contentType});
+                a.href = URL.createObjectURL(file);
+                a.download = fileName;
+                a.click();
+            }
+            download(JSON.stringify(exportedKey), 'key.json', 'json/application');
+          }}
+        >
+          <KeySVG width={60} />
+          Export key
         </button>
       </section>
     </main>

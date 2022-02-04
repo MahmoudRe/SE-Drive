@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { genSecretKey } from "searchable-encryption";
+import { genSecretKey, importSecretKey } from "searchable-encryption";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
@@ -24,8 +24,13 @@ function RegistrationPage(props) {
       onFileAdded: (fileList) => {
         let file = fileList[0];
         var reader = new FileReader();
-        reader.onloadend = function (e) {
-          setData(this.result);
+        reader.onloadend = function(e) {
+          importSecretKey(JSON.parse(this.result))
+            .then((secretKey) => {
+              setData(true);
+              props.user.setKeyObj(secretKey);
+            })
+            .catch((e) => showSpinner(false));
         };
         reader.readAsText(file);
       },
@@ -36,7 +41,7 @@ function RegistrationPage(props) {
   }, []);
 
   useEffect(() => {
-    if(data && !showSpinner) {
+    if (data && !showSpinner) {
       const cb = () => {
         setShowSpinner(true);
         setTimeout(async () => {
@@ -45,27 +50,27 @@ function RegistrationPage(props) {
           setShowSpinner(false);
           props.setPageCount(props.pageCount + 1);
         }, 1400);
-      }
-      props.nextBtn.setCallback(() => cb)
+      };
+      props.nextBtn.setCallback(() => cb);
       props.nextBtn.setShow(true);
     }
   }, [data, showSpinner]);
 
   const onSubmitGenKey = (e) => {
-    e.preventDefault()
-    setShowSpinnerGen(true)
+    e.preventDefault();
+    setShowSpinnerGen(true);
     setTimeout(async () => {
       const keyObj = await genSecretKey(passphrase);
       props.user.setKeyObj(keyObj);
       setShowSpinnerGen(false);
       props.setPageCount(props.pageCount + 1);
-    }, 1400)
-  }
+    }, 1400);
+  };
 
   return (
     <main>
       <div className="sub-header" style={{ marginBottom: "2rem" }}>
-        <KeySVG style={{width: 30}}/>
+        <KeySVG style={{ width: 30 }} />
         <h2> Generate an account.. I mean a secret key! </h2>
       </div>
       <section className="either-area">
