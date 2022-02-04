@@ -40,8 +40,11 @@ function HomePage(props) {
         width={60}
         style={{ position: "absolute", top: "calc(4vh + 3rem)", right: "4%" }}
         className="back-home"
-        onClick={() => {
+        onClick={async () => {
           //remove user data
+          const { ipcRenderer } = window.require("electron");
+          await ipcRenderer.invoke("logout");
+          props.setKeyObj(null);
           props.setPageCount(0);
         }}
       />

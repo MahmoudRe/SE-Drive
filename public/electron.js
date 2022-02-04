@@ -31,6 +31,9 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  if (fs.existsSync('Wallet/AdminIdentity.id') && fs.existsSync('connection.json'))
+    Chaincode.connect();
+      
   createWindow();
 });
 
@@ -46,6 +49,9 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
+    if (fs.existsSync('Wallet/AdminIdentity.id') && fs.existsSync('connection.json')) 
+      Chaincode.connect();
+
     createWindow();
   }
 });
@@ -69,7 +75,7 @@ ipcMain.handle('add-peer', async (event, [peerId]) => {
 })
 
 ipcMain.handle('logout', async (event, args) => {
-  fs.writeFileSync('Wallet/AdminIdentity.id', "");
-  fs.writeFileSync('connection.json', "");
+  fs.unlinkSync('Wallet/AdminIdentity.id');
+  fs.unlinkSync('connection.json');
   return true;
 })
