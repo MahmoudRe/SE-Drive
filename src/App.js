@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { exportSecretKey, importSecretKey } from "searchable-encryption";
 import ConnectionPage from "./pages/ConnectionPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
@@ -12,7 +13,16 @@ import "./App.css";
 function App() {
   const [name, setName] = useState("");
   const [keyObj, setKeyObj] = useState(null);
-  const user = { name, setName, keyObj, setKeyObj };
+  const user = {
+    name,
+    setName,
+    keyObj,
+    setKeyObj: async (key) => {
+      setKeyObj(key);
+      key = key ? await exportSecretKey(key) : null;
+      localStorage.setItem("key", JSON.stringify(key));
+    },
+  };
 
   const [show, setShow] = useState(false);
   const [callback, setCallback] = useState(() => {});
@@ -24,6 +34,16 @@ function App() {
   };
 
   const [pageCount, setPageCount] = useState(0);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const connected = urlParams.get("connected");
+
+    let key = JSON.parse(localStorage.getItem("key"));
+    key && importSecretKey(key).then(setKeyObj)
+
+    if (connected && key) setPageCount(3);
+  }, []);
 
   const props = { user, pageCount, setPageCount, nextBtn };
   const pages = [
@@ -56,6 +76,7 @@ function App() {
         style={{
           display: "flex",
           justifyContent: "space-between",
+          paddingBottom: "2rem"
         }}
       >
         {pageCount > 0 && pageCount < 3 ? (

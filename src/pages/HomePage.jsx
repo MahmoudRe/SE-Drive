@@ -55,7 +55,7 @@ function HomePage(props) {
           width={35}
           style={{ margin: "auto", marginBottom: "15px" }}
         />
-        <h2> Welcome Home! </h2>
+        <h2> Welcome Home{props.user.name ? "," + props.user.name : ""}! </h2>
       </div>
       <section style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
         <button
@@ -81,7 +81,7 @@ function HomePage(props) {
             ...styleCard,
             backgroundColor: "#FFF7E4",
             border: "3px solid #E8BB1A",
-            lineHeight: "1",
+            lineHeight: 1,
           }}
           onClick={async () => {
             let exportedKey = await exportSecretKey(props.user.keyObj);

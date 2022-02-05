@@ -4,7 +4,7 @@ const fs = require('fs');
 const { app, BrowserWindow } = require('electron');
 const { ipcMain } = require('electron');
 
-function createWindow() {
+function createWindow(queryString = "") {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 975,
@@ -21,6 +21,7 @@ function createWindow() {
   win.loadURL(
       'http://localhost:3000' // [DEV]
       // `file://${path.join(__dirname, '../build/index.html')}`
+      + queryString
   );
   
   // [DEV]
@@ -31,10 +32,12 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  if (fs.existsSync('Wallet/AdminIdentity.id') && fs.existsSync('connection.json'))
-    Chaincode.connect();
-      
-  createWindow();
+  if (fs.existsSync('Wallet/AdminIdentity.id') && fs.existsSync('connection.json')) 
+    Chaincode.connect()
+      .then(() => createWindow('?connected=1'))
+      .catch(() => createWindow());
+  else
+    createWindow();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -50,9 +53,11 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     if (fs.existsSync('Wallet/AdminIdentity.id') && fs.existsSync('connection.json')) 
-      Chaincode.connect();
-
-    createWindow();
+    Chaincode.connect()
+      .then(() => createWindow('?connected=1'))
+      .catch(() => createWindow());
+    else
+      createWindow();
   }
 });
 

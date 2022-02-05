@@ -39,10 +39,22 @@ function ConnectionPage(props) {
         setShowSpinner(true);
         setTimeout(async () => {
           const { ipcRenderer } = window.require("electron");
-          await ipcRenderer.invoke("connect", data);
+          ipcRenderer.invoke("connect", data)
+          .then(() => {
+            props.nextBtn.setShow(false);
+            props.setPageCount(props.pageCount + 1);
+          })
+          .catch(e => {
+            let errorEl = Array.from(document.querySelectorAll('.advance-file-input + .error')).pop();
+            let helpEl = Array.from(document.querySelectorAll('.advance-file-input + .error + .help-text')).pop();
+            errorEl.textContent = "There is an issue occurred; please try again! " + e;
+            errorEl.classList.remove('hide');
+            errorEl.style.display = "block";
+            helpEl.style.display = "none";
+            setShowSpinner(false);
+          });
+
           setShowSpinner(false);
-          props.nextBtn.setShow(false);
-          props.setPageCount(props.pageCount + 1);
         }, 1400);
       }
       props.nextBtn.setCallback(() => cb)
