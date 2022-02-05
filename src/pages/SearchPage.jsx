@@ -22,9 +22,14 @@ function SearchPage(props) {
 
   const search = async (query) => {
     setLoading(true);
+
+    //if query consists of multiple keywords, the trapdoor is the hash for each keyword
+    let hashedQuery = query.split(' ').map(async e => await trapdoor(e, props.user.keyObj))
+    hashedQuery = (await Promise.all(hashedQuery)).join(' ')
+
     const { ipcRenderer } = window.require("electron");
     let encryptedSegments = await ipcRenderer
-      .invoke("evaluate-transaction", ["search", await trapdoor(query, props.user.keyObj)])
+      .invoke("evaluate-transaction", ["search", hashedQuery])
       .catch((e) => {
         setResult([]);
         setLoading(false);
@@ -39,10 +44,9 @@ function SearchPage(props) {
       decrypt(encryptedSegment, props.user.keyObj)
     );
 
-    Promise.all(result).then((e) => {
-      setResult(e);
-      setLoading(false);
-    });
+    result = await Promise.all(result);
+    setResult(result);
+    setLoading(false);
   };
 
   return (
@@ -106,7 +110,7 @@ function SearchPage(props) {
               key={idx}
               dangerouslySetInnerHTML={{
                 __html: e.replace(
-                  new RegExp(keyword, "gi"),
+                  new RegExp(keyword.split(' ').join('|'), "gi"),
                   '<span class="highlight"}>$&</span>' // $&: is the placeholder for the matched string
                 ),
               }}
