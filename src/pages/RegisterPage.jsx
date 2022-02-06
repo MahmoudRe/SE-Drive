@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as IdCardSVG } from "../assets/id-card.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
-import "../libs/advance-file-input.css";
 
 function RegisterPage(props) {
   const [peerId, setPeerId] = useState("");

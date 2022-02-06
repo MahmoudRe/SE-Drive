@@ -4,7 +4,6 @@ import SearchIcon from "../assets/search.png";
 import NoResultsIllustration from "../assets/no-record.png";
 import SearchIllustration from "../assets/search-illustration.png";
 import Spinner from "../components/Spinner"
-import "../libs/advance-file-input.css";
 
 function SearchPage(props) {
   useEffect(() => {

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { encrypt, buildIndex } from 'searchable-encryption';
+import { encrypt, buildIndex, ab2str, str2ab } from 'searchable-encryption';
 import Spinner from '../components/Spinner';
 import { ReactComponent as BookSVG } from "../assets/book.svg";
-import { ReactComponent as DoneSVG } from "../assets/done.svg";
-import "../libs/advance-file-input.css";
+import DragDropArea from "../libs/drag-drop-area.js";
 
 function StoreTextPage(props) {
   useEffect(() => {
@@ -18,6 +17,19 @@ function StoreTextPage(props) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    DragDropArea(textarea.current, async (fileList) => {
+      const { ipcRenderer } = window.require('electron');
+      let result = await ipcRenderer.invoke('parse-pdf', await fileList[0].arrayBuffer());
+      let formattedText = result?.text
+        .replace(/^\n*/, '')                                //remove leading  empty lines
+        .replace(/(?<=\n)\d+(\n\n|$)/g, '')                   //remove page numbers
+        .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, '\n\n$&')   //divided it according to numerical (sub)sections
+        .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, ' ')
+      textarea.current.value = formattedText
+    });
+  }, []);
+  
   const store = async () => {
     setLoading(true);
 
@@ -73,7 +85,7 @@ function StoreTextPage(props) {
           fontFamily: "Roboto Condensed",
           padding: "1rem"
         }}
-        placeholder="Start typing here... "
+        placeholder="Start typing here... Or drop a PDF file here..."
         ref={textarea}
         disabled={loading}
       />

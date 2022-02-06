@@ -8,6 +8,7 @@ import SearchPage from "./pages/SearchPage";
 import KeyPage from "./pages/KeyPage";
 import { ReactComponent as LeftArrowSVG } from "./assets/left-arrow.svg";
 import HomeIcon from "./assets/home.png";
+import "./libs/advance-file-input.css";
 import "./App.css";
 
 function App() {

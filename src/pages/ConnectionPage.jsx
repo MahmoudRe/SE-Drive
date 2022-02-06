@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as NetworkSVG } from "../assets/network.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
-import "../libs/advance-file-input.css";
 
 function ConnectionPage(props) {
   const [data, setData] = useState("");

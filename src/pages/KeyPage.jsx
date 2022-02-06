@@ -3,7 +3,6 @@ import { genSecretKey, importSecretKey } from "searchable-encryption";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
-import "../libs/advance-file-input.css";
 
 function RegistrationPage(props) {
   const [data, setData] = useState("");

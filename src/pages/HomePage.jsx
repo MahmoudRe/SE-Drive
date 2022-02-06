@@ -5,7 +5,6 @@ import { exportSecretKey } from "searchable-encryption";
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
 import { ReactComponent as LogoutSVG } from "../assets/logout.svg";
-import "../libs/advance-file-input.css";
 
 const styleCard = {
   width: "27.25rem",
@@ -55,7 +54,7 @@ function HomePage(props) {
           width={35}
           style={{ margin: "auto", marginBottom: "15px" }}
         />
-        <h2> Welcome Home{props.user.name ? "," + props.user.name : ""}! </h2>
+        <h2> Welcome Home{props.user.name ? ", " + props.user.name : ""}! </h2>
       </div>
       <section style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
         <button

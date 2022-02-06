@@ -1,6 +1,7 @@
 const path = require('path');
 const Chaincode = require("./chaincode");
 const fs = require('fs');
+const pdfParse = require('pdf-parse');
 const { app, BrowserWindow } = require('electron');
 const { ipcMain } = require('electron');
 
@@ -83,4 +84,8 @@ ipcMain.handle('logout', async (event, args) => {
   fs.unlinkSync('Wallet/AdminIdentity.id');
   fs.unlinkSync('connection.json');
   return true;
+})
+
+ipcMain.handle('parse-pdf', async (event, file) => {
+  return pdfParse(file);
 })
