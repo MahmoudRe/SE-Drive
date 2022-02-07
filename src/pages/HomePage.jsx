@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import HomeIcon from "../assets/home.png";
 import SearchIcon from "../assets/search.png";
+import GalleryIcon from "../assets/gallery.png";
 import { exportSecretKey } from "searchable-encryption";
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
@@ -87,6 +88,15 @@ function HomePage(props) {
           Notes
         </button>
         <button
+          style={{ ...styleCard, backgroundColor: "#E4FDEF", border: "3px solid #0FD15C" }}
+          onClick={() => {
+            props.setPageCount(props.pageCount + 3);
+          }}
+        >
+          <FilesDirSVG width={70} />
+          Files
+        </button>
+        <button
           style={{ ...styleCard, backgroundColor: "#D8D9ED", border: "3px solid #4345CF" }}
           onClick={() => {
             props.setPageCount(props.pageCount + 2);
@@ -119,31 +129,13 @@ function HomePage(props) {
           Export key
         </button>
         <button
-          style={{ ...styleCard, backgroundColor: "#E4FDEF", border: "3px solid #0FD15C" }}
-          onClick={() => {
-            props.setPageCount(props.pageCount + 3);
-          }}
-        >
-          <FilesDirSVG width={60} />
-          Files
-        </button>
-        <button
           style={{ ...styleCard }}
           onClick={() => {
             props.setPageCount(props.pageCount + 3);
           }}
         >
-          {/* <img src={SearchIcon} alt="search page" width={65} /> */}
-          Files
-        </button>
-        <button
-          style={{ ...styleCard }}
-          onClick={() => {
-            props.setPageCount(props.pageCount + 2);
-          }}
-        >
-          {/* <img src={SearchIcon} alt="search page" width={65} /> */}
-          IPFS settings
+          <img src={GalleryIcon} alt="search page" width={65} />
+          Gallery
         </button>
       </section>
     </main>
