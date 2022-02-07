@@ -16,22 +16,30 @@ function StoreTextPage(props) {
   const textarea = useRef(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if(props.textareaValue) {
       textarea.current.value = props.textareaValue;
       props.setNextPageProps({});
     }
-    
+
     DragDropArea(textarea.current, async (fileList) => {
       const { ipcRenderer } = window.require('electron');
-      let result = await ipcRenderer.invoke('parse-pdf', await fileList[0].arrayBuffer());
-      let formattedText = result?.text
-        .replace(/^\n*/, '')                                //remove leading  empty lines
-        .replace(/(?<=\n)\d+(\n\n|$)/g, '')                   //remove page numbers
-        .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, '\n\n$&')   //divided it according to numerical (sub)sections
-        .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, ' ')
-      textarea.current.value = formattedText
+      let [result, error] = await ipcRenderer.invoke('get-text', await fileList[0].path);
+      if(error) {
+        setError(error.message);
+        return;
+      }
+
+      if(fileList[0].type === "application/pdf")
+        result = result
+          .replace(/^\r*\n*|[ ]*/, '')                          //remove leading  empty lines and spaces
+          .replace(/(?<=\n)\d+(\n\n|$)/g, '')                   //remove page numbers
+          .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, '\n\n$&')   //divided it according to numerical (sub)sections
+          .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, ' ')
+
+      textarea.current.value = result
     });
   }, []);
   
@@ -90,22 +98,28 @@ function StoreTextPage(props) {
           fontFamily: "Roboto Condensed",
           padding: "1rem"
         }}
-        placeholder="Start typing here... Or drop a PDF file here..."
+        placeholder="Start typing here... Or drop your file here... accepted files: [PDF, DOC, DOCX, DOT, TXT, CSV, XLS, XLSX]"
         ref={textarea}
         disabled={loading}
-      />
+      />      
       { loading && <Spinner floating done={success} /> }
       <div
         style={{
           width: "100%",
-          display: "flex",
-          justifyContent: "flex-end",
+          display: "grid",
+          gridTemplateColumns: "auto min-content min-content",
           alignItems: "center",
           marginTop: "1rem",
           gap: "2rem",
           position: "absolute",
         }}
       >
+        <p 
+          className="error"
+          style={{
+            alignSelf: "flex-start",
+          }}
+        >{props.error || error}</p>
         <div className="tooltip"> i
           <span className="tooltiptext">
             To enable searching on encrypted (very long) text, it should be first divided into chunks or

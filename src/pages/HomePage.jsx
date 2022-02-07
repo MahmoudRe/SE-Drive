@@ -37,13 +37,16 @@ function HomePage(props) {
 
     DragDropArea(notes.current, async (fileList) => {
       const { ipcRenderer } = window.require('electron');
-      let result = await ipcRenderer.invoke('parse-pdf', await fileList[0].arrayBuffer());
-      let formattedText = result?.text
-        .replace(/^\n*/, '')                                //remove leading  empty lines
-        .replace(/(?<=\n)\d+(\n\n|$)/g, '')                   //remove page numbers
-        .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, '\n\n$&')   //divided it according to numerical (sub)sections
-        .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, ' ')
-      props.setNextPageProps({textareaValue: formattedText});
+      let [result, error] = await ipcRenderer.invoke('get-text', await fileList[0].path);
+
+      if(fileList[0].type === "application/pdf")
+        result = result
+          .replace(/^\r*\n*|[ ]*/, '')                          //remove leading  empty lines and spaces
+          .replace(/(?<=\n)\d+(\n\n|$)/g, '')                   //remove page numbers
+          .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, '\n\n$&')   //divided it according to numerical (sub)sections
+          .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, ' ')
+
+      props.setNextPageProps({textareaValue: result, error: error?.message});
       props.setPageCount(props.pageCount + 1);
     })
   }, []);
@@ -113,6 +116,33 @@ function HomePage(props) {
         >
           <KeySVG width={60} />
           Export key
+        </button>
+        <button
+          style={{ ...styleCard }}
+          onClick={() => {
+            props.setPageCount(props.pageCount + 2);
+          }}
+        >
+          {/* <img src={SearchIcon} alt="search page" width={65} /> */}
+          Gallery
+        </button>
+        <button
+          style={{ ...styleCard }}
+          onClick={() => {
+            props.setPageCount(props.pageCount + 2);
+          }}
+        >
+          {/* <img src={SearchIcon} alt="search page" width={65} /> */}
+          Files
+        </button>
+        <button
+          style={{ ...styleCard }}
+          onClick={() => {
+            props.setPageCount(props.pageCount + 2);
+          }}
+        >
+          {/* <img src={SearchIcon} alt="search page" width={65} /> */}
+          IPFS settings
         </button>
       </section>
     </main>

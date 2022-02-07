@@ -1,7 +1,7 @@
 const path = require('path');
 const Chaincode = require("./chaincode");
 const fs = require('fs');
-const pdfParse = require('pdf-parse');
+var reader = require('any-text');
 const { app, BrowserWindow } = require('electron');
 const { ipcMain } = require('electron');
 
@@ -86,6 +86,8 @@ ipcMain.handle('logout', async (event, args) => {
   return true;
 })
 
-ipcMain.handle('parse-pdf', async (event, file) => {
-  return pdfParse(file);
+ipcMain.handle('get-text', async (event, filePath) => {
+  return reader.getText(filePath)
+    .then(res => [res, undefined])
+    .catch(err => ["", err]);
 })
