@@ -3,7 +3,8 @@ import { trapdoor, decrypt } from "searchable-encryption";
 import SearchIcon from "../assets/search.png";
 import NoResultsIllustration from "../assets/no-record.png";
 import SearchIllustration from "../assets/search-illustration.png";
-import Spinner from "../components/Spinner"
+import Spinner from "../components/Spinner";
+import { getFileIcon } from "../libs/advance-file-input"
 
 function SearchPage(props) {
   useEffect(() => {
@@ -15,7 +16,8 @@ function SearchPage(props) {
   }, []);
 
   const [keyword, setSearchKeyword] = useState("");
-  const [result, setResult] = useState([]);
+  const [resultNotes, setResultNotes] = useState([]);
+  const [resultFiles, setResultFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null); //for real-time search
 
@@ -23,14 +25,14 @@ function SearchPage(props) {
     setLoading(true);
 
     //if query consists of multiple keywords, the trapdoor is the hash for each keyword
-    let hashedQuery = query.split(' ').map(async e => await trapdoor(e, props.user.keyObj))
-    hashedQuery = (await Promise.all(hashedQuery)).join(' ')
+    let hashedQuery = query.split(" ").map(async (e) => await trapdoor(e, props.user.keyObj));
+    hashedQuery = (await Promise.all(hashedQuery)).join(" ");
 
     const { ipcRenderer } = window.require("electron");
     let encryptedSegments = await ipcRenderer
       .invoke("evaluate-transaction", ["search", hashedQuery])
       .catch((e) => {
-        setResult([]);
+        setResultNotes([]);
         setLoading(false);
         return null;
       });
@@ -44,7 +46,23 @@ function SearchPage(props) {
     );
 
     result = await Promise.all(result);
-    setResult(result);
+
+    let textResult = [];
+    let filesResult = [];
+
+    for (let item of result) {
+      try {
+        let file = JSON.parse(item);
+        filesResult.push(file);
+      } catch (err) {
+        textResult.push(item);
+      }
+    }
+
+    console.log(filesResult, textResult)
+
+    setResultFiles(filesResult);
+    setResultNotes(textResult);
     setLoading(false);
   };
 
@@ -73,7 +91,7 @@ function SearchPage(props) {
               setSearchKeyword(e.target.value);
 
               if (!e.target.value) {
-                setResult([]);
+                setResultNotes([]);
                 clearTimeout(timeoutId);
                 setLoading(false);
                 return;
@@ -83,10 +101,14 @@ function SearchPage(props) {
 
               //real-time search with 1.5s delay
               clearTimeout(timeoutId);
-              let timeoutIdLocal = setTimeout(() => {
-                search(e.target.value);
-              },  1500, [e.target.value])
-              setTimeoutId(timeoutIdLocal)
+              let timeoutIdLocal = setTimeout(
+                () => {
+                  search(e.target.value);
+                },
+                1500,
+                [e.target.value]
+              );
+              setTimeoutId(timeoutIdLocal);
             }}
           />
         </div>
@@ -95,27 +117,45 @@ function SearchPage(props) {
         className="search-results"
         style={{
           //if the content fits the view, skip adding marginBottom to prevent unnecessary scrollbar
-          // marginBottom: document.body.scrollHeight > document.body.clientHeight ? "5rem" : "0", 
+          // marginBottom: document.body.scrollHeight > document.body.clientHeight ? "5rem" : "0",
           position: "relative",
-          minHeight: "80%"
+          minHeight: "80%",
         }}
       >
-        {loading && <Spinner floating overlayColor="white" /> }
-        {!!result.length && <h3> Results: </h3>}
-        {!!result.length &&
-          result.map((e, idx) => (
+        {loading && <Spinner floating overlayColor="white" />}
+
+        {!!resultFiles.length && <h3> Files: </h3>}
+        {!!resultFiles.length &&
+          resultFiles.map((e, idx) => (
+            <div
+              className="result-file"
+              key={idx}
+              dangerouslySetInnerHTML={{
+                __html: `
+                <div class="result-file__icon">${getFileIcon(e.type)}</div>
+                <div class="result-file__name">${e.name}</div>
+                <div class="result-file__size">${e.size}</div>
+                `
+              }}
+            />
+          ))}
+
+        {!!resultNotes.length && <h3> Notes: </h3>}
+        {!!resultNotes.length &&
+          resultNotes.map((e, idx) => (
             <div
               className="result-segment"
               key={idx}
               dangerouslySetInnerHTML={{
                 __html: e.replace(
-                  new RegExp(keyword.split(' ').join('|'), "gi"),
+                  new RegExp(keyword.split(" ").join("|"), "gi"),
                   '<span class="highlight"}>$&</span>' // $&: is the placeholder for the matched string
                 ),
               }}
             />
           ))}
-        {!result.length && (
+
+        {!resultNotes.length && !resultFiles.length && (
           <div
             style={{
               width: "100%",

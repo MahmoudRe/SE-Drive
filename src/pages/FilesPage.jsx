@@ -43,9 +43,11 @@ function StoreTextPage(props) {
         setLoading(false);
       });
       let segmentData = JSON.stringify({
-        type: "ipfsFile",
-        fileType: file.type,
+        segType: "ipfsFile",
+        type: file.type,
         path: ipfsFile.path,
+        size: file.size,
+        name: file.name
       });
       data.segments.push({ pointer: crypto.randomUUID(), data: segmentData });
       keywordsExtractor = { ...keywordsExtractor, [segmentData]: keywords.split(", ") };

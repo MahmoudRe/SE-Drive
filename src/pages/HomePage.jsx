@@ -13,7 +13,7 @@ const styleCard = {
   width: "27.25rem",
   height: "13rem",
   padding: "2rem 3rem",
-  backgroundColor: "var(--color-primary-bg)",
+  backgroundColor: "var(--color-primary-bg-tint)",
   border: "3px solid var(--color-primary)",
   borderRadius: "10px",
   display: "flex",
@@ -33,7 +33,7 @@ function HomePage(props) {
     document.documentElement.style.setProperty("--color-primary-light", "#F0A513");
     document.documentElement.style.setProperty("--color-primary-dark", "#E1464C");
     document.documentElement.style.setProperty("--color-primary-bg", "#FFFBF3");
-    document.documentElement.style.setProperty("--color-primary-bg-tint", "#F8EBC3");
+    document.documentElement.style.setProperty("--color-primary-bg-tint", "#FFEDE2");
 
     props.nextBtn.setShow(false); // [TEMP FIX] this is done in the previous page, but currently it does't work.
 

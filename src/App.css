@@ -228,6 +228,39 @@ textarea.--dragover {
   user-select: text;
 }
 
+.search-results .result-file {
+  background-color: var(--color-primary-bg-tint);
+  font-weight: 700;
+  padding: 1rem;
+  border-radius: .3rem;
+  font-size: 1.8rem;
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-template-rows: 1fr 1fr;
+  align-items: flex-start;
+  gap: 0 2rem;
+  margin-bottom: 1rem;
+}
+
+.search-results .result-file:hover {
+  outline: 2px solid var(--color-primary);
+  cursor: pointer;
+}
+
+.search-results .result-file__icon {
+  grid-row: -1 / 1;
+  place-self: center;
+  padding-top: 5px;
+  padding-left: .5rem;
+  transform: scale(1.2);
+}
+
+.search-results .result-file__size {
+  color: var(--color-primary);
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
 /* ------------ Scrollbar ------------ */
 ::-webkit-scrollbar {
   width: 1.7rem;

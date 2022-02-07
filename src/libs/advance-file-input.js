@@ -687,7 +687,7 @@ export default class AdvanceFileInput {
 
 // ------------- [ Util functions ] ------------- //
 
-function getFileIcon(type) {
+export function getFileIcon(type) {
     if(type.includes('image'))
         return `
             <svg xmlns="http://www.w3.org/2000/svg" height="32px" width="32px" viewBox="0 0 36 36">
@@ -791,5 +791,7 @@ function getFileIcon(type) {
         </svg>`;
 
     //fallback icon 
-    return '';
+    return `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><defs><linearGradient id="a" y2="-112" gradientUnits="userSpaceOnUse" x2="-80" gradientTransform="translate(2 922.36)" y1="123" x1="105"><stop style="stop-color:#e6e6e6" offset="0"/><stop style="stop-color:#f9f9f9" offset="1"/></linearGradient><linearGradient id="b" y2="957.36" gradientUnits="userSpaceOnUse" x2="80" gradientTransform="translate(2 -2)" y1="944.36" x1="93"><stop style="stop-color:#ccc" offset="0"/><stop style="stop-color:#e6e6e6" offset=".22008"/><stop style="stop-color:#fff" offset=".46933"/><stop style="stop-color:#e6e6e6" offset="1"/></linearGradient></defs><path style="stroke-linejoin:round;fill-rule:evenodd;stroke:gray;stroke-width:1px;fill:url(#a)" d="M82 930.36H22v115h85v-90l-25-25z" transform="translate(0 -924.36)"/><path style="stroke-linejoin:round;fill-rule:evenodd;stroke:gray;stroke-width:1px;fill:url(#b)" d="m107 955.36-25-25c1.8633 8.3333 2.1329 16.667 0 25 9.9055-1.935 17.128-.56751 25 0z" transform="translate(0 -924.36)"/></svg>
+    `;
 }
