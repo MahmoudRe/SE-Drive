@@ -18,6 +18,11 @@ function StoreTextPage(props) {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+    if(props.textareaValue) {
+      textarea.current.value = props.textareaValue;
+      props.setNextPageProps({});
+    }
+    
     DragDropArea(textarea.current, async (fileList) => {
       const { ipcRenderer } = window.require('electron');
       let result = await ipcRenderer.invoke('parse-pdf', await fileList[0].arrayBuffer());

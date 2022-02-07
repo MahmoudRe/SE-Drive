@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import HomeIcon from "../assets/home.png";
 import SearchIcon from "../assets/search.png";
 import { exportSecretKey } from "searchable-encryption";
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
 import { ReactComponent as LogoutSVG } from "../assets/logout.svg";
+import DragDropArea from "../libs/drag-drop-area";
 
 const styleCard = {
   width: "27.25rem",
@@ -23,6 +24,8 @@ const styleCard = {
 };
 
 function HomePage(props) {
+  const notes = useRef(null)
+
   useEffect(() => {
     document.documentElement.style.setProperty("--color-primary", "#EA8341");
     document.documentElement.style.setProperty("--color-primary-light", "#F0A513");
@@ -31,6 +34,18 @@ function HomePage(props) {
     document.documentElement.style.setProperty("--color-primary-bg-tint", "#F8EBC3");
 
     props.nextBtn.setShow(false); // [TEMP FIX] this is done in the previous page, but currently it does't work.
+
+    DragDropArea(notes.current, async (fileList) => {
+      const { ipcRenderer } = window.require('electron');
+      let result = await ipcRenderer.invoke('parse-pdf', await fileList[0].arrayBuffer());
+      let formattedText = result?.text
+        .replace(/^\n*/, '')                                //remove leading  empty lines
+        .replace(/(?<=\n)\d+(\n\n|$)/g, '')                   //remove page numbers
+        .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, '\n\n$&')   //divided it according to numerical (sub)sections
+        .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, ' ')
+      props.setNextPageProps({textareaValue: formattedText});
+      props.setPageCount(props.pageCount + 1);
+    })
   }, []);
 
   return (
@@ -62,9 +77,10 @@ function HomePage(props) {
           onClick={() => {
             props.setPageCount(props.pageCount + 1);
           }}
+          ref={notes}
         >
           <BookSVG width={60} />
-          Store
+          Notes
         </button>
         <button
           style={{ ...styleCard, backgroundColor: "#D8D9ED", border: "3px solid #4345CF" }}

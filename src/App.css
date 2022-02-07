@@ -60,6 +60,7 @@ button, .button {
   user-select: none;
 }
 
+button.--dragover,
 button:hover, 
 .button:hover {
   cursor: pointer;

@@ -35,6 +35,7 @@ function App() {
   };
 
   const [pageCount, setPageCount] = useState(0);
+  const [nextPageProps, setNextPageProps] = useState({});
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -46,14 +47,14 @@ function App() {
     if (connected && key) setPageCount(3);
   }, []);
 
-  const props = { user, pageCount, setPageCount, nextBtn };
+  const props = { user, pageCount, setPageCount, setNextPageProps, nextBtn };
   const pages = [
-    <KeyPage {...props} />,
-    <RegisterPage {...props} />,
-    <ConnectionPage {...props} />,
-    <HomePage {...props} />,
-    <StoreTextPage {...props} />,
-    <SearchPage {...props} />,
+    <KeyPage {...props} {...nextPageProps} />,
+    <RegisterPage {...props} {...nextPageProps} />,
+    <ConnectionPage {...props} {...nextPageProps} />,
+    <HomePage {...props} {...nextPageProps} />,
+    <StoreTextPage {...props} {...nextPageProps} />,
+    <SearchPage {...props} {...nextPageProps} />,
   ];
 
   return (
