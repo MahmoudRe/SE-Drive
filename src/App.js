@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import StoreTextPage from "./pages/StoreTextPage";
 import SearchPage from "./pages/SearchPage";
+import FilesPage from "./pages/FilesPage";
 import KeyPage from "./pages/KeyPage";
 import { ReactComponent as LeftArrowSVG } from "./assets/left-arrow.svg";
 import HomeIcon from "./assets/home.png";
@@ -55,6 +56,7 @@ function App() {
     <HomePage {...props} {...nextPageProps} />,
     <StoreTextPage {...props} {...nextPageProps} />,
     <SearchPage {...props} {...nextPageProps} />,
+    <FilesPage {...props} {...nextPageProps} />,
   ];
 
   return (

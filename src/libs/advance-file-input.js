@@ -36,11 +36,13 @@ export default class AdvanceFileInput {
             externalPreviewWrapper = '',    //external image preview wrapper (only when input accepts one file)
             withPreview = false,            //show the built-in image preview
             withAnimation = true,           //show in/out-animation for file-card
+            withLabel = true,
+            withKeywordsField = false,
             maxFileSize = 3e+6,             //size in bytes
             dragText = 'Drag your file here',
             beforeLoadingPreview = () => {},
             onFileAdded = () => {},
-            onFileRemoved = () => {}
+            onFileRemoved = () => {},
         } = config;
 
         let droppedFilesMap = new Map();   //in case of multiple-files
@@ -87,9 +89,11 @@ export default class AdvanceFileInput {
         let labelText = label.textContent;
         label.textContent = '';
 
-        let newLabel = document.createElement('label');
-        newLabel.textContent = labelText;
-        parentNode.insertBefore(newLabel, containerDiv);
+        if (withLabel) {
+            let newLabel = document.createElement('label');
+            newLabel.textContent = labelText;
+            parentNode.insertBefore(newLabel, containerDiv);
+        }
 
         label.appendChild(input);
 
@@ -112,6 +116,7 @@ export default class AdvanceFileInput {
         containerDiv.insertBefore(filesContainer, label);
         let arrowRightIcon = null;
         let arrowLeftIcon = null;
+        let filesContainerLabel = null;
         if (withPreview) {
             filesContainer.classList.add('preview-container');
             containerDiv.classList.add('--has-preview-container');
@@ -163,6 +168,15 @@ export default class AdvanceFileInput {
         } 
         else {
             filesContainer.classList.add('files-container');
+
+            if(withKeywordsField) {
+                filesContainerLabel = parseElement(`
+                <div class="files-container__label">
+                    <label> Files: </label>
+                    <label> Keywords: </label>
+                </div>`)
+                containerDiv.insertBefore(filesContainerLabel, filesContainer)
+            }
         }
 
 
@@ -190,7 +204,7 @@ export default class AdvanceFileInput {
         if (input.multiple)
             this.sortable = Sortable.create(filesContainer, {
                 animation: 150,
-                draggable: '.preview-card, .file-card',
+                draggable: '.preview-card, .file-card-wrapper, .file-card',
                 onStart: () => {
                     containerDiv.classList.add('--dragover-sortable');
                 },
@@ -462,7 +476,7 @@ export default class AdvanceFileInput {
         }
 
         function addFileCard({id, name, type, status, animationDelay = 0, onRemove = () => {}, animate = withAnimation}) {
-            const fileCard = parseElement(
+            let elementText =
                 `<div class="file-card" data-id="${id}"> 
                     <div class="file-card__icon">
                         ${ getFileIcon(type) }
@@ -481,8 +495,19 @@ export default class AdvanceFileInput {
                         </svg>
                     </div>
                  </div>`
-            );
 
+            if(withKeywordsField)
+                elementText = `
+                <div class="file-card-wrapper" data-id="${id}"> 
+                    ${elementText} 
+                    <textarea class="keywords" placeholder="Type some keywords for this file, separated by comma..">${ name.replace(/^\r*\n*|[ ]*/, '').replace(/\.[A-Za-z]{1,5}/, '').replace(/[ ]|\-/, ', ') }</textarea>
+                </div>`
+
+            const fileCard = parseElement(elementText)
+
+            if(withKeywordsField && filesContainer.children.length == 0)
+                filesContainerLabel.style.display = 'grid';
+            
             fileCard.querySelector('.file-card__remove').addEventListener('click', (e) => {
                 const removedFile = droppedFilesMap.get(id);
                 droppedFilesMap.delete(id);
@@ -501,6 +526,9 @@ export default class AdvanceFileInput {
                 }
 
                 function removeCard() {
+                    if(withKeywordsField && filesContainer.children.length == 1)
+                        filesContainerLabel.style.display = 'none';
+                    
                     fileCard.remove();
                     onRemove(removedFile);
                 }
@@ -628,6 +656,31 @@ export default class AdvanceFileInput {
 		}
 
         return formData; 
+    } 
+
+    getData() { 
+        let res = [];
+		// add files to formData, preserve order as in preview
+		for(let key of this.sortable.toArray()) {
+            const keywords = document.querySelector(`[data-id="${key}"] textarea`).value;
+			if (this.droppedFilesMap.has(key)) {
+				let file = this.droppedFilesMap.get(key);
+				res.push({file, keywords});
+			}
+			else {
+				res.push({file: key, keywords})
+			}
+		}
+
+        return res; 
+    } 
+
+    removeAll() { 
+		// add files to formData, preserve order as in preview
+		for(let key of this.sortable.toArray()) {
+            this.droppedFilesMap.delete(key)
+            document.querySelector(`[data-id="${key}"] .advance-file-input__remove-btn`)?.click()
+		}
     } 
 }
 

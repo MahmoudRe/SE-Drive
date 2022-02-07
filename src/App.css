@@ -15,7 +15,6 @@ header, .header {
   /* margin: auto; */
 }
 
-
 header h1 {
   margin-bottom: 0;
 }
@@ -152,6 +151,10 @@ button.back-button:hover svg {
   border-radius: 7px;
   align-items: center;
   margin-top: .7rem;
+}
+
+.files-page .advance-file-input {
+  height: 50vh;
 }
 
 label, .label {

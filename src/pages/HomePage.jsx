@@ -4,6 +4,7 @@ import SearchIcon from "../assets/search.png";
 import { exportSecretKey } from "searchable-encryption";
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
+import { ReactComponent as FilesDirSVG } from "../assets/files-dir.svg";
 import { ReactComponent as LogoutSVG } from "../assets/logout.svg";
 import DragDropArea from "../libs/drag-drop-area";
 
@@ -61,7 +62,7 @@ function HomePage(props) {
           //remove user data
           const { ipcRenderer } = window.require("electron");
           await ipcRenderer.invoke("logout");
-          props.setKeyObj(null);
+          props.user.setKeyObj(null);
           props.setPageCount(0);
         }}
       />
@@ -118,18 +119,18 @@ function HomePage(props) {
           Export key
         </button>
         <button
-          style={{ ...styleCard }}
+          style={{ ...styleCard, backgroundColor: "#E4FDEF", border: "3px solid #0FD15C" }}
           onClick={() => {
-            props.setPageCount(props.pageCount + 2);
+            props.setPageCount(props.pageCount + 3);
           }}
         >
-          {/* <img src={SearchIcon} alt="search page" width={65} /> */}
-          Gallery
+          <FilesDirSVG width={60} />
+          Files
         </button>
         <button
           style={{ ...styleCard }}
           onClick={() => {
-            props.setPageCount(props.pageCount + 2);
+            props.setPageCount(props.pageCount + 3);
           }}
         >
           {/* <img src={SearchIcon} alt="search page" width={65} /> */}
