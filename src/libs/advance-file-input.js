@@ -74,7 +74,7 @@ export default class AdvanceFileInput {
             errorDiv.classList.add('error');
             errorDiv.classList.add('hide');
         }
-        errorDiv.style.display = 'grid'
+        errorDiv.style.display = "none";
         errorDiv.style['grid-template-columns'] = 'minmax(100%, min-content)';
         parentNode.appendChild(errorDiv);
 
@@ -512,7 +512,7 @@ export default class AdvanceFileInput {
                 const removedFile = droppedFilesMap.get(id);
                 droppedFilesMap.delete(id);
                 errorDiv.classList.add('hide');
-                errorDiv.style.display = 'grid';
+                errorDiv.style.display = 'none';
 
                 if(withAnimation) {
                     fileCard
@@ -563,7 +563,7 @@ export default class AdvanceFileInput {
             previewCard.querySelector('.preview-card__remove').addEventListener('click', (e) => {
                 droppedFilesMap.delete(id);
                 errorDiv.classList.add('hide');
-                errorDiv.style.display = 'grid';
+                errorDiv.style.display = 'none';
 
                 if(withAnimation) {
                     //animation helper

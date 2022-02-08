@@ -118,6 +118,7 @@
   grid-template-columns: auto 1fr auto;
   border-radius: 4px;
   border: 1px solid var(--color-primary);
+  overflow: hidden;
   background: white;
   padding: 1rem;
   height: 5.6rem;
