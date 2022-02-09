@@ -21,16 +21,27 @@ function SearchPage(props) {
   const [loading, setLoading] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null); //for real-time search
 
-  const search = async (query) => {
+  const search = async (queries) => {
     setLoading(true);
 
-    //if query consists of multiple keywords, the trapdoor is the hash for each keyword
-    let hashedQuery = query.split(" ").map(async (e) => await trapdoor(e, props.user.keyObj));
-    hashedQuery = (await Promise.all(hashedQuery)).join(" ");
+    let hashedQueries = queries
+      .trim()
+      .split("|")
+      .map(async (query) => {
+        // for query consists of multiple keywords, the trapdoor is the hash for each keyword
+        // intersection of the associated pointers is done by Chaincode transation
+        let hashedQuery = query
+          .trim()
+          .split(" ")
+          .map(async (e) => await trapdoor(e, props.user.keyObj));
+        return (await Promise.all(hashedQuery)).join(" ");
+      });
+
+    let finalTrapdoor = (await Promise.all(hashedQueries)).join("|");
 
     const { ipcRenderer } = window.require("electron");
     let encryptedSegments = await ipcRenderer
-      .invoke("evaluate-transaction", ["search", hashedQuery])
+      .invoke("evaluate-transaction", ["search", finalTrapdoor])
       .catch((e) => {
         setResultNotes([]);
         setLoading(false);
@@ -100,13 +111,7 @@ function SearchPage(props) {
 
               //real-time search with 1.5s delay
               clearTimeout(timeoutId);
-              let timeoutIdLocal = setTimeout(
-                () => {
-                  search(e.target.value);
-                },
-                1500,
-                [e.target.value]
-              );
+              let timeoutIdLocal = setTimeout(() => search(e.target.value), 1500, [e.target.value]);
               setTimeoutId(timeoutIdLocal);
             }}
           />
@@ -125,9 +130,7 @@ function SearchPage(props) {
 
         {!!resultFiles.length && <h3> Files: </h3>}
         {!!resultFiles.length &&
-          resultFiles.map((file, idx) => (
-            <FileCard key={idx} file={file} user={props.user}/>
-          ))}
+          resultFiles.map((file, idx) => <FileCard key={idx} file={file} user={props.user} />)}
 
         {!!resultNotes.length && <h3> Notes: </h3>}
         {!!resultNotes.length &&
@@ -137,7 +140,17 @@ function SearchPage(props) {
               key={idx}
               dangerouslySetInnerHTML={{
                 __html: e.replace(
-                  new RegExp(keyword.split(" ").join("|"), "gi"),
+                  new RegExp(
+                    keyword
+                      .trim()
+                      .split("|")
+                      .map((w) => w.trim())
+                      .join("|")
+                      .split(" ")
+                      .map((w) => w.trim())
+                      .join("|"),
+                    "gi"
+                  ),
                   '<span class="highlight"}>$&</span>' // $&: is the placeholder for the matched string
                 ),
               }}
