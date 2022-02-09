@@ -35,10 +35,10 @@
 }
 @keyframes bounceCloudArrow {
   from {
-    transform: translateY(0px);
+    transform: translate(-15px, -10px);
  }
   to {
-    transform: translateY(4px);
+    transform: translate(-15px, 35px);
  }
 }
 .advance-file-input.--dragover-sortable .preview-container .preview-card:hover .preview-card__tooltip {

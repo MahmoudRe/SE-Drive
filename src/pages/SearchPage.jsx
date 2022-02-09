@@ -90,6 +90,7 @@ function SearchPage(props) {
 
               if (!e.target.value) {
                 setResultNotes([]);
+                setResultFiles([]);
                 clearTimeout(timeoutId);
                 setLoading(false);
                 return;
