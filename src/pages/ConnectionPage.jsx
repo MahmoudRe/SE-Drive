@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as NetworkSVG } from "../assets/network.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
+import { readFile } from "../libs/utils";
 
 function ConnectionPage(props) {
   const [data, setData] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
+    props.nextBtn.setShow(false);
     document.documentElement.style.setProperty("--color-primary", "#009FDA");
     document.documentElement.style.setProperty("--color-primary-light", "#13b0e9");
     document.documentElement.style.setProperty("--color-primary-dark", "#2c8caf");
@@ -17,13 +19,10 @@ function ConnectionPage(props) {
     new AdvanceFileInput({
       selector: "#connection-config",
       dragText: "Drag your network connection.json file",
-      onFileAdded: (fileList) => {
+      onFileAdded: async (fileList) => {
         let file = fileList[0];
-        let reader = new FileReader();
-        reader.onloadend = function (e) {
-          setData(this.result);
-        };
-        reader.readAsText(file);
+        let res = await readFile(file)
+        setData(res);
       },
       onFileRemoved: () => {
         setData("");

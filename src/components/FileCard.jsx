@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { downloadFromURL, downloadFromBuffer } from "../libs/utils";
 import { getFileIcon, bytesToString } from "../libs/advance-file-input";
-import { abConcat } from "searchable-encryption";
 import "./FileCard.css";
 
 /**
@@ -18,10 +17,9 @@ export default function FileCard(props) {
     <div
       className="file-card"
       onClick={async () => {
-        if(buffer)
-          return downloadFromBuffer(buffer, file.name, file.type);
+        if (buffer) return downloadFromBuffer(buffer, file.name, file.type);
 
-        if(progress) return;
+        if (progress) return;
         setProgress(2);
 
         let dataBuffer = await downloadFromURL("https://dweb.link/ipfs/" + file.path, {
@@ -29,6 +27,8 @@ export default function FileCard(props) {
           contentType: file.type,
           contentSize: file.size,
           callbackProgress: setProgress,
+        }).catch(e => {
+          alert("Error while downloading the file: " + file.name + ".\n" + e.message);
         });
 
         let decryptedData = await crypto.subtle.decrypt(

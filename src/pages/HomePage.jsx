@@ -30,13 +30,13 @@ function HomePage(props) {
   const notes = useRef(null);
 
   useEffect(() => {
+    props.nextBtn.setShow(false);
     document.documentElement.style.setProperty("--color-primary", "#EA8341");
     document.documentElement.style.setProperty("--color-primary-light", "#F0A513");
     document.documentElement.style.setProperty("--color-primary-dark", "#E1464C");
     document.documentElement.style.setProperty("--color-primary-bg", "#FFFBF3");
     document.documentElement.style.setProperty("--color-primary-bg-tint", "#FFEDE2");
 
-    props.nextBtn.setShow(false); // [TEMP FIX] this is done in the previous page, but currently it does't work.
 
     DragDropArea(notes.current, async (fileList) => {
       const { ipcRenderer } = window.require("electron");

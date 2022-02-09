@@ -15,7 +15,7 @@ export function downloadFromString(content, fileName, contentType) {
 }
 
 export async function downloadFromURL(url, options) {
-  let { fileName = "", contentType = "", contentSize = 0, callbackProgress = () => {} } = options;
+  let { contentSize = 0, callbackProgress = () => {} } = options;
   let response = await fetch(url);
 
   if (response.redirected)
@@ -23,7 +23,6 @@ export async function downloadFromURL(url, options) {
 
   const reader = response.body.getReader();
   contentSize = contentSize || response.headers.get("Content-Length");
-  contentType = contentType || response.headers.get("Content-Type");
 
   let receivedLength = 0; // received that many bytes at the moment
   let chunks = []; // array of received binary chunks (comprises the body)
@@ -36,26 +35,18 @@ export async function downloadFromURL(url, options) {
     chunks.push(value);
     receivedLength += value.length;
 
-    console.log(`Received ${Math.floor((receivedLength / contentSize) * 100)} of ${contentSize}`);
-    callbackProgress(Math.floor((receivedLength / contentSize) * 100));
+    let progress = Math.floor((receivedLength / contentSize) * 100)
+    callbackProgress(progress <= 100 ? progress : 100);
   }
 
-  // Step 4: concatenate chunks into single Uint8Array
-  let chunksAll = new Uint8Array(receivedLength); // (4.1)
+  let buffer = new Uint8Array(receivedLength);
   let position = 0;
   for(let chunk of chunks) {
-    chunksAll.set(chunk, position); // (4.2)
+    buffer.set(chunk, position);
     position += chunk.length;
   }
 
-  // let file = new Blob(chunks);
-
-  // let a = document.createElement("a");
-  // a.href = URL.createObjectURL(file);
-  // a.download = fileName;
-  // a.click();
-
-  return chunksAll;
+  return buffer;
 }
 
 export function formatText(str) {
@@ -75,7 +66,7 @@ export function readFile(file){
   return new Promise((resolve, reject) => {
     var reader = new FileReader();  
     reader.onload = () => {
-      resolve(reader.result )
+      resolve(reader.result)
     };
     reader.onerror = reject;
     reader.readAsText(file);

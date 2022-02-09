@@ -3,15 +3,16 @@ import { genSecretKey, importSecretKey } from "searchable-encryption";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
-import { readFile } from "../libs/utils"
+import { readFile } from "../libs/utils";
 
 function KeyPage(props) {
-  const [keyObj, setKeyObj] = useState(null);
+  const [keyObjRaw, setKeyObjRaw] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSpinnerGen, setShowSpinnerGen] = useState(false);
   const [passphrase, setPassphrase] = useState("");
 
   useEffect(() => {
+    props.nextBtn.setShow(false);
     document.documentElement.style.setProperty("--color-primary", "#E8BB1A");
     document.documentElement.style.setProperty("--color-primary-light", "#FDCC1D");
     document.documentElement.style.setProperty("--color-primary-dark", "#EDBF1C");
@@ -25,7 +26,7 @@ function KeyPage(props) {
         let file = fileList[0];
         return readFile(file).then((res) => {
           try {
-            setKeyObj(JSON.parse(res))
+            setKeyObjRaw(JSON.parse(res))
             return true;
           } catch (err) {
             alert("The selected file isn't a valid key: \n" + err.message)
@@ -37,17 +38,17 @@ function KeyPage(props) {
         })
       },
       onFileRemoved: () => {
-        setKeyObj("");
+        setKeyObjRaw("");
       },
     });
   }, []);
 
   useEffect(() => {
-    if (keyObj && !showSpinner) {
+    if (keyObjRaw && !showSpinner) {
       const cb = () => {
         setShowSpinner(true);
         setTimeout(async () => {
-          importSecretKey(keyObj)
+          importSecretKey(keyObjRaw)
             .then((secretKey) => {
               props.user.setKeyObj(secretKey);
               props.setPageCount(props.pageCount + 1);
@@ -65,7 +66,7 @@ function KeyPage(props) {
       props.nextBtn.setCallback(() => {});
       props.nextBtn.setShow(false);
     }
-  }, [keyObj, showSpinner]);
+  }, [keyObjRaw, showSpinner]);
 
   const onSubmitGenKey = (e) => {
     e.preventDefault();

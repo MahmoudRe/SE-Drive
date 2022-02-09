@@ -9,6 +9,7 @@ function RegisterPage(props) {
   const [showSpinnerReg, setShowSpinnerReg] = useState(false);
 
   useEffect(() => {
+    props.nextBtn.setShow(false);
     document.documentElement.style.setProperty("--color-primary", "#83BDBD");
     document.documentElement.style.setProperty("--color-primary-light", "#83BDBD");
     document.documentElement.style.setProperty("--color-primary-dark", "#83BDBD");
@@ -53,7 +54,7 @@ function RegisterPage(props) {
               helpEl.style.display = "none";
               setShowSpinner(false);
             });
-        }, 1400);
+        }, 750);
       };
       props.nextBtn.setCallback(() => cb);
       props.nextBtn.setShow(true);
@@ -71,6 +72,7 @@ function RegisterPage(props) {
           id="register-user"
           style={{ position: "relative" }}
           onSubmit={() => {
+            setShowSpinnerReg(false);
             alert(
               'Sorry, this functionality is still under development, please register a new peer manually and upload your "Peer.id" and "Peer CA.id"'
             );

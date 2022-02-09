@@ -11,7 +11,7 @@ const ipfs = ipfsClient({ url: 'http://localhost:5001'})
 function createWindow(queryString = "") {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 975,
+    width: 1000,
     height: 675,
     webPreferences: {
       nodeIntegration: true,
