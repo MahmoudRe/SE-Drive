@@ -45,8 +45,6 @@ function App() {
     let key = JSON.parse(localStorage.getItem("key"));
     key && importSecretKey(key).then(setKeyObj)
 
-    console.log(connected, key)
-
     if (connected && key) setPageCount(3);
   }, []);
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { encrypt, buildIndex } from 'searchable-encryption';
-import Spinner from '../components/Spinner';
+import { encrypt, buildIndex } from "searchable-encryption";
+import Spinner from "../components/Spinner";
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import DragDropArea from "../libs/drag-drop-area.js";
+import { formatText } from "../libs/utils";
 
 function NotesPage(props) {
   useEffect(() => {
@@ -19,55 +20,77 @@ function NotesPage(props) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if(props.textareaValue) {
+    if (props.textareaValue) {
       textarea.current.value = props.textareaValue;
       props.setNextPageProps({});
     }
 
     DragDropArea(textarea.current, async (fileList) => {
-      const { ipcRenderer } = window.require('electron');
-      let [result, error] = await ipcRenderer.invoke('get-text', await fileList[0].path);
-      if(error) {
+      const { ipcRenderer } = window.require("electron");
+      let [result, error] = await ipcRenderer.invoke("get-text", await fileList[0].path);
+      if (error) {
         setError(error.message);
         return;
       }
 
-      if(fileList[0].type === "application/pdf")
-        result = result
-          .replace(/^\r*\n*|[ ]*/, '')                          //remove leading  empty lines and spaces
-          .replace(/(?<=\n)\d+(\n\n|$)/g, '')                   //remove page numbers
-          .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, '\n\n$&')   //divided it according to numerical (sub)sections
-          .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, ' ')
+      if (
+        [
+          "application/msword",
+          "application/pdf",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ].includes(fileList[0].type)
+      )
+        result = formatText(result);
 
-      textarea.current.value = result
+      textarea.current.value = result;
     });
   }, []);
-  
+
   const store = async () => {
     setLoading(true);
 
-    const { ipcRenderer } = window.require('electron');
+    const { ipcRenderer } = window.require("electron");
     let plainText = textarea.current.value;
     const data = {};
 
-    if(!plainText) {
+    if (!plainText) {
       setLoading(false);
-      alert("Can't store empty data; please write something first!") 
+      alert("Can't store empty data; please write something first!");
       return;
     }
 
     //split textual contents to paragraphs (segments)
-    let segments = plainText.split('\n\n');
-    data.segments = segments.map(e => ({ pointer: crypto.randomUUID(), data: e }))
+    let segments = plainText.split("\n\n");
+    data.segments = segments.map((e) => ({ pointer: crypto.randomUUID(), data: e }));
 
     //build index and encrypt segments
-    data.indexTable = buildIndex(data.segments, props.user.keyObj);
-    data.segments = data.segments.map(async ({pointer, data}) => ({pointer: pointer, data: await encrypt(data, props.user.keyObj)}))
+    data.indexTable = buildIndex(data.segments, props.user.keyObj, (e) => {
+      let formatted = e
+        .replace(/[^A-Za-z0-9_’'\n\r ]/g, "") //remove any symbol or punctuation attached to strings
+        .split(/[\r\n ]/g)
+        .map((w) => w.toUpperCase());
+
+      return new Set(formatted);
+    });
+
+    data.segments = data.segments.map(async ({ pointer, data }) => ({
+      pointer: pointer,
+      data: await encrypt(data, props.user.keyObj),
+    }));
+
     data.segments = await Promise.all(data.segments);
     data.indexTable = await data.indexTable;
-    data.indexTable = Object.entries(data.indexTable).map(([key, value]) => ({ hash: key, pointers: value }))
-    
-    await ipcRenderer.invoke('submit-transaction', ['storeJSON', JSON.stringify(data.segments), JSON.stringify(data.indexTable)])
+    data.indexTable = Object.entries(data.indexTable).map(([key, value]) => ({
+      hash: key,
+      pointers: value,
+    }));
+
+    await ipcRenderer
+      .invoke("submit-transaction", [
+        "storeJSON",
+        JSON.stringify(data.segments),
+        JSON.stringify(data.indexTable),
+      ])
       .then(() => {
         textarea.current.value = "";
         setSuccess(true);
@@ -76,14 +99,14 @@ function NotesPage(props) {
           setSuccess(false);
         }, 2500);
       })
-      .catch(e => { 
+      .catch((e) => {
         setLoading(false);
-        alert('Something went wrong: ', e); 
-      })
-  }
+        alert("Something went wrong: ", e);
+      });
+  };
 
   return (
-    <main style={{position: "relative"}}>
+    <main style={{ position: "relative" }}>
       <div className="sub-header">
         <BookSVG width={30} />
         <h2> Store your private text securely </h2>
@@ -96,13 +119,13 @@ function NotesPage(props) {
           borderRadius: 7,
           fontSize: "1.8rem",
           fontFamily: "Roboto Condensed",
-          padding: "1rem"
+          padding: "1rem",
         }}
         placeholder="Start typing here... Or drop your file here... accepted files: [PDF, DOC, DOCX, DOT, TXT, CSV, XLS, XLSX]"
         ref={textarea}
         disabled={loading}
-      />      
-      { loading && <Spinner floating done={success} /> }
+      />
+      {loading && <Spinner floating done={success} />}
       <div
         style={{
           width: "100%",
@@ -114,20 +137,26 @@ function NotesPage(props) {
           position: "absolute",
         }}
       >
-        <p 
+        <p
           className="error"
           style={{
             alignSelf: "flex-start",
           }}
-        >{props.error || error}</p>
-        <div className="tooltip"> i
+        >
+          {props.error || error}
+        </p>
+        <div className="tooltip">
+          {" "}
+          i
           <span className="tooltiptext">
-            To enable searching on encrypted (very long) text, it should be first divided into chunks or
-            segments; the smaller the chunks, the accuracy of the search increases later on. Here the
-            text is segmented per paragraph.
+            To enable searching on encrypted (very long) text, it should be first divided into
+            chunks or segments; the smaller the chunks, the accuracy of the search increases. Here
+            the text is segmented per paragraph, where paragraphs are separated by empty line.
           </span>
         </div>
-        <button onClick={store} style={{ width: "20rem", height: "5rem" }} disabled={loading}>Store to ledger</button>
+        <button onClick={store} style={{ width: "20rem", height: "5rem" }} disabled={loading}>
+          Store to ledger
+        </button>
       </div>
     </main>
   );

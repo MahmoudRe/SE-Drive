@@ -297,6 +297,8 @@ textarea::-webkit-resizer {
   color: var(--color-primary);
   cursor: pointer;
   user-select: none;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 /* Tooltip text */
@@ -312,11 +314,14 @@ textarea::-webkit-resizer {
   font-family:'Roboto Condensed', cursive;
   font-size: 1.8rem;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.2;
  
   /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
+}
+.tooltip .tooltiptext.--gray {
+  background-color: #dadada;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
@@ -341,4 +346,7 @@ textarea::-webkit-resizer {
   border-width: 10px;
   border-style: solid;
   border-color: var(--color-primary-bg-tint) transparent transparent transparent;
+}
+.tooltip .tooltiptext::after {
+  border-color: #dadada transparent transparent transparent;
 }

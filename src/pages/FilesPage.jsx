@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { encrypt, buildIndex } from "searchable-encryption";
 import Spinner from "../components/Spinner";
 import { ReactComponent as FilesDirSVG } from "../assets/files-dir.svg";
@@ -129,7 +129,7 @@ function NotesPage(props) {
         </p>
         <div className="tooltip">
           i
-          <span className="tooltiptext">
+          <span className="tooltiptext --gray">
             The provided keywords next to each file will be used to identify this file when
             searching for one of the given keywords. It is a comma separated keywords, and the
             auto-filled value are extracted from file name, so feel free to edit them.
