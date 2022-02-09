@@ -4,7 +4,7 @@ import Spinner from "../components/Spinner";
 import { ReactComponent as FilesDirSVG } from "../assets/files-dir.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 
-function StoreTextPage(props) {
+function NotesPage(props) {
   useEffect(() => {
     document.documentElement.style.setProperty("--color-primary", "#0FD15C");
     document.documentElement.style.setProperty("--color-primary-light", "#2CE174");
@@ -137,4 +137,4 @@ function StoreTextPage(props) {
   );
 }
 
-export default StoreTextPage;
+export default NotesPage;

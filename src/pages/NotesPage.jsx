@@ -4,7 +4,7 @@ import Spinner from '../components/Spinner';
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import DragDropArea from "../libs/drag-drop-area.js";
 
-function StoreTextPage(props) {
+function NotesPage(props) {
   useEffect(() => {
     document.documentElement.style.setProperty("--color-primary", "#DF2549");
     document.documentElement.style.setProperty("--color-primary-light", "#FF1D48");
@@ -133,4 +133,4 @@ function StoreTextPage(props) {
   );
 }
 
-export default StoreTextPage;
+export default NotesPage;

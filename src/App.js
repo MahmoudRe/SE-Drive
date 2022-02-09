@@ -3,7 +3,7 @@ import { exportSecretKey, importSecretKey } from "searchable-encryption";
 import ConnectionPage from "./pages/ConnectionPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
-import StoreTextPage from "./pages/StoreTextPage";
+import NotesPage from "./pages/NotesPage";
 import SearchPage from "./pages/SearchPage";
 import FilesPage from "./pages/FilesPage";
 import KeyPage from "./pages/KeyPage";
@@ -54,7 +54,7 @@ function App() {
     <RegisterPage {...props} {...nextPageProps} />,
     <ConnectionPage {...props} {...nextPageProps} />,
     <HomePage {...props} {...nextPageProps} />,
-    <StoreTextPage {...props} {...nextPageProps} />,
+    <NotesPage {...props} {...nextPageProps} />,
     <SearchPage {...props} {...nextPageProps} />,
     <FilesPage {...props} {...nextPageProps} />,
   ];
