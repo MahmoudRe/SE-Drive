@@ -27,7 +27,9 @@ export default class AdvanceFileInput {
      * @param {(img:HTMLElement) => {}} config.beforeLoadingPreview (optional) Callback injected BEFORE loading the image preview into the external wrapper or the preview conatiner,
      *                                                                          the function is loaded as Promise function to block appending the image into the DOM untill this function is resolved, 
      *                                                                          the created image element is passed as the first argument (to be used only with 'externalPreviewWrapper' or 'withPreview' option).
-     * @param {(files:FileList) => {}} config.onFileAdded (optional) Callback that called when a new file(s) has been dropped/added, with FileList obj as the first argument.
+     * @param {(files:FileList) => true|false} config.beforeFileAdded (optional) Callback that called when a new file(s) has been dropped/added, but before adding to dom.
+     *                                                                            The returns (true) or (false) determine whether to proceed or not.
+     * @param {(files:FileList) => {}} config.onFileAdded (optional) async Callback that called when a new file(s) has been dropped/added, with FileList obj as the first argument.
      * @param {(files:FileList) => {}} config.onFileRemoved (optional) Callback that called when a new file(s) has been removed, with removed file as the first argument.
      */
     constructor(config = {}) {
@@ -41,6 +43,7 @@ export default class AdvanceFileInput {
             maxFileSize = 3e+6,             //size in bytes
             dragText = 'Drag your file here',
             beforeLoadingPreview = () => {},
+            beforeFileAdded = async () => true,
             onFileAdded = () => {},
             onFileRemoved = () => {},
         } = config;
@@ -266,7 +269,9 @@ export default class AdvanceFileInput {
             addFiles(e.target.files);
         });
 
-        function addFiles(newFiles) {
+        async function addFiles(newFiles) {
+
+            if(!(await beforeFileAdded(newFiles))) return;
             
             //hide error msg
             errorDiv.classList.add('hide');

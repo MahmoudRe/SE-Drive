@@ -65,3 +65,19 @@ export function formatText(str) {
     .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, "\n\n$&") //divided it according to numerical (sub)sections
     .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, " ");
 }
+
+/**
+ * Promisified version of FileReader()
+ * @param {File} file 
+ * @returns 
+ */
+export function readFile(file){
+  return new Promise((resolve, reject) => {
+    var reader = new FileReader();  
+    reader.onload = () => {
+      resolve(reader.result )
+    };
+    reader.onerror = reject;
+    reader.readAsText(file);
+  });
+}

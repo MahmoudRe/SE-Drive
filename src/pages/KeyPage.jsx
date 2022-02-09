@@ -3,9 +3,10 @@ import { genSecretKey, importSecretKey } from "searchable-encryption";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
+import { readFile } from "../libs/utils"
 
-function RegistrationPage(props) {
-  const [data, setData] = useState("");
+function KeyPage(props) {
+  const [keyObj, setKeyObj] = useState(null);
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSpinnerGen, setShowSpinnerGen] = useState(false);
   const [passphrase, setPassphrase] = useState("");
@@ -20,40 +21,51 @@ function RegistrationPage(props) {
     new AdvanceFileInput({
       selector: "#key-object-file",
       dragText: "Drag your key file here",
-      onFileAdded: (fileList) => {
+      beforeFileAdded: async (fileList) => {
         let file = fileList[0];
-        var reader = new FileReader();
-        reader.onloadend = function(e) {
-          importSecretKey(JSON.parse(this.result))
-            .then((secretKey) => {
-              setData(true);
-              props.user.setKeyObj(secretKey);
-            })
-            .catch((e) => showSpinner(false));
-        };
-        reader.readAsText(file);
+        return readFile(file).then((res) => {
+          try {
+            setKeyObj(JSON.parse(res))
+            return true;
+          } catch (err) {
+            alert("The selected file isn't a valid key: \n" + err.message)
+            return false;      
+          }
+        }).catch((err) => {
+          alert("There is an issue while reading the file: \n" + err.message);
+          return false;
+        })
       },
       onFileRemoved: () => {
-        setData("");
+        setKeyObj("");
       },
     });
   }, []);
 
   useEffect(() => {
-    if (data && !showSpinner) {
+    if (keyObj && !showSpinner) {
       const cb = () => {
         setShowSpinner(true);
         setTimeout(async () => {
-          // const { ipcRenderer } = window.require("electron");
-          // await ipcRenderer.invoke("connect", data);
+          importSecretKey(keyObj)
+            .then((secretKey) => {
+              props.user.setKeyObj(secretKey);
+              props.setPageCount(props.pageCount + 1);
+            })
+            .catch((e) => {
+              alert("There is an issue while importing the key:\n" + e.message)
+            });
           setShowSpinner(false);
-          props.setPageCount(props.pageCount + 1);
-        }, 1400);
+        }, 750);
       };
       props.nextBtn.setCallback(() => cb);
       props.nextBtn.setShow(true);
     }
-  }, [data, showSpinner]);
+    else {
+      props.nextBtn.setCallback(() => {});
+      props.nextBtn.setShow(false);
+    }
+  }, [keyObj, showSpinner]);
 
   const onSubmitGenKey = (e) => {
     e.preventDefault();
@@ -134,4 +146,4 @@ function RegistrationPage(props) {
   );
 }
 
-export default RegistrationPage;
+export default KeyPage;
