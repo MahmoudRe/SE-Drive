@@ -204,7 +204,7 @@ export default class AdvanceFileInput {
         if (input.multiple)
             this.sortable = Sortable.create(filesContainer, {
                 animation: 150,
-                draggable: '.preview-card, .file-card-wrapper, .file-card',
+                draggable: '.preview-card, .afi__file-card-wrapper, .afi__file-card',
                 onStart: () => {
                     containerDiv.classList.add('--dragover-sortable');
                 },
@@ -470,15 +470,15 @@ export default class AdvanceFileInput {
 
         function addFileCard({id, name, type, status, animationDelay = 0, onRemove = () => {}, animate = withAnimation}) {
             let elementText =
-                `<div class="file-card" data-id="${id}"> 
-                    <div class="file-card__icon">
+                `<div class="afi__file-card" data-id="${id}"> 
+                    <div class="afi__file-card__icon">
                         ${ getFileIcon(type) }
                     </div>
                     <div>
-                        <p class="file-card__name">${name}</p>
-                        <p class="file-card__status">${status}</p>
+                        <p class="afi__file-card__name">${name}</p>
+                        <p class="afi__file-card__status">${status}</p>
                     </div>
-                    <div class="file-card__remove advance-file-input__remove-btn">
+                    <div class="afi__file-card__remove advance-file-input__remove-btn">
                         <svg width="20px" height="22px" viewBox="0 0 20 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>Remove file</title>
                             <g id="Icon/Trash" fill="none" transform="translate(1, 1)" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
@@ -491,7 +491,7 @@ export default class AdvanceFileInput {
 
             if(withKeywordsField)
                 elementText = `
-                <div class="file-card-wrapper" data-id="${id}"> 
+                <div class="afi__file-card-wrapper" data-id="${id}"> 
                     ${elementText} 
                     <textarea class="keywords" placeholder="Type some keywords for this file, separated by comma..">${ name.replace(/^\r*\n*|[ ]*/, '').replace(/\.[A-Za-z]{1,5}/, '').replace(/[ ]|\-/, ', ') }</textarea>
                 </div>`
@@ -501,7 +501,7 @@ export default class AdvanceFileInput {
             if(withKeywordsField && filesContainer.children.length == 0)
                 filesContainerLabel.style.display = 'grid';
             
-            fileCard.querySelector('.file-card__remove').addEventListener('click', (e) => {
+            fileCard.querySelector('.afi__file-card__remove').addEventListener('click', (e) => {
                 const removedFile = droppedFilesMap.get(id);
                 droppedFilesMap.delete(id);
                 errorDiv.classList.add('hide');

@@ -103,17 +103,17 @@
 
   display: none; /* initial */
 }
-.advance-file-input .files-container .file-card-wrapper {
+.advance-file-input .files-container .afi__file-card-wrapper {
   display: grid;
   grid-template-columns: auto 250px;
   gap: 1rem;
 }
-.advance-file-input .files-container .file-card-wrapper .keywords {
+.advance-file-input .files-container .afi__file-card-wrapper .keywords {
   border-radius: 4px;
   border: 1px solid var(--color-primary);
   padding: 5px
 }
-.advance-file-input .files-container .file-card {
+.advance-file-input .files-container .afi__file-card {
   display: grid;
   grid-template-columns: auto 1fr auto;
   border-radius: 4px;
@@ -124,16 +124,16 @@
   height: 5.6rem;
   cursor: grab;
 }
-.advance-file-input .files-container .file-card__icon {
+.advance-file-input .files-container .afi__file-card__icon {
   grid-column: 1;
   grid-row: -1;
   margin: auto;
   margin-right: 15px;
 }
-.advance-file-input .files-container .file-card__icon svg {
+.advance-file-input .files-container .afi__file-card__icon svg {
   display: block;
 }
-.advance-file-input .files-container .file-card__name {
+.advance-file-input .files-container .afi__file-card__name {
   grid-row: 1;
   grid-column: 2;
   font-size: 1.5rem;
@@ -145,7 +145,7 @@
   overflow: hidden;
   position: relative;
 }
-.advance-file-input .files-container .file-card__name::after {
+.advance-file-input .files-container .afi__file-card__name::after {
   content: "";
   background: linear-gradient(to left, #fff 0%, rgba(255, 255, 255, 0) 100%);
   position: absolute;
@@ -155,7 +155,7 @@
   right: 0;
   z-index: 2;
 }
-.advance-file-input .files-container .file-card__status {
+.advance-file-input .files-container .afi__file-card__status {
   grid-row: 2;
   grid-column: 2;
   font-size: 1.2rem;
@@ -165,7 +165,7 @@
   color: var(--color-primary);
   margin: 4px 0 0 0;
 }
-.advance-file-input .files-container .file-card__remove {
+.advance-file-input .files-container .afi__file-card__remove {
   grid-column: 3;
   grid-row: -1;
   margin: auto 7px;
@@ -267,11 +267,11 @@
 .advance-file-input .preview-container .preview-card__remove:hover + .preview-card__tooltip {
   display: none;
 }
-.advance-file-input .file-card.sortable-ghost, .advance-file-input .preview-card.sortable-ghost {
+.advance-file-input .afi__file-card.sortable-ghost, .advance-file-input .preview-card.sortable-ghost {
   background: var(--bg-color);
   border: 2px dashed var(--color-primary);
   cursor: grabbing !important;
 }
-.advance-file-input .file-card.sortable-ghost *, .advance-file-input .preview-card.sortable-ghost * {
+.advance-file-input .afi__file-card.sortable-ghost *, .advance-file-input .preview-card.sortable-ghost * {
   visibility: hidden;
 }
