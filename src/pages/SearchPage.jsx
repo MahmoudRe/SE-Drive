@@ -4,7 +4,7 @@ import SearchIcon from "../assets/search.png";
 import NoResultsIllustration from "../assets/no-record.png";
 import SearchIllustration from "../assets/search-illustration.png";
 import Spinner from "../components/Spinner";
-import { getFileIcon } from "../libs/advance-file-input"
+import FileCard from "../components/FileCard";
 
 function SearchPage(props) {
   useEffect(() => {
@@ -58,8 +58,6 @@ function SearchPage(props) {
         textResult.push(item);
       }
     }
-
-    console.log(filesResult, textResult)
 
     setResultFiles(filesResult);
     setResultNotes(textResult);
@@ -126,18 +124,8 @@ function SearchPage(props) {
 
         {!!resultFiles.length && <h3> Files: </h3>}
         {!!resultFiles.length &&
-          resultFiles.map((e, idx) => (
-            <div
-              className="result-file"
-              key={idx}
-              dangerouslySetInnerHTML={{
-                __html: `
-                <div class="result-file__icon">${getFileIcon(e.type)}</div>
-                <div class="result-file__name">${e.name}</div>
-                <div class="result-file__size">${e.size}</div>
-                `
-              }}
-            />
+          resultFiles.map((file, idx) => (
+            <FileCard key={idx} file={file} />
           ))}
 
         {!!resultNotes.length && <h3> Notes: </h3>}

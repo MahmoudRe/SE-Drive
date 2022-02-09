@@ -468,13 +468,6 @@ export default class AdvanceFileInput {
             }
         }
 
-        function bytesToString(bytes) {
-            if (bytes > 1000000000) return (Math.round(bytes/100000000)/10 + 'GB')
-            else if (bytes > 1000000) return (Math.round(bytes/100000)/10 + 'MB')
-            else if (bytes > 1000) return (Math.round(bytes/1000) + 'KB')
-            else return (bytes + 'B');
-        }
-
         function addFileCard({id, name, type, status, animationDelay = 0, onRemove = () => {}, animate = withAnimation}) {
             let elementText =
                 `<div class="file-card" data-id="${id}"> 
@@ -686,6 +679,13 @@ export default class AdvanceFileInput {
 
 
 // ------------- [ Util functions ] ------------- //
+
+export function bytesToString(bytes) {
+    if (bytes > 1000000000) return (Math.round(bytes/100000000)/10 + 'GB')
+    else if (bytes > 1000000) return (Math.round(bytes/100000)/10 + 'MB')
+    else if (bytes > 1000) return (Math.round(bytes/1000) + 'KB')
+    else return (bytes + 'B');
+}
 
 export function getFileIcon(type) {
     if(type.includes('image'))

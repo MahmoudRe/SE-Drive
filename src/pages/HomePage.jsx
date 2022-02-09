@@ -8,6 +8,7 @@ import { ReactComponent as KeySVG } from "../assets/key.svg";
 import { ReactComponent as FilesDirSVG } from "../assets/files-dir.svg";
 import { ReactComponent as LogoutSVG } from "../assets/logout.svg";
 import DragDropArea from "../libs/drag-drop-area";
+import { downloadFromString, formatText } from "../libs/utils";
 
 const styleCard = {
   width: "27.25rem",
@@ -26,7 +27,7 @@ const styleCard = {
 };
 
 function HomePage(props) {
-  const notes = useRef(null)
+  const notes = useRef(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty("--color-primary", "#EA8341");
@@ -38,19 +39,15 @@ function HomePage(props) {
     props.nextBtn.setShow(false); // [TEMP FIX] this is done in the previous page, but currently it does't work.
 
     DragDropArea(notes.current, async (fileList) => {
-      const { ipcRenderer } = window.require('electron');
-      let [result, error] = await ipcRenderer.invoke('get-text', await fileList[0].path);
+      const { ipcRenderer } = window.require("electron");
+      let [result, error] = await ipcRenderer.invoke("get-text", await fileList[0].path);
 
-      if(fileList[0].type === "application/pdf")
-        result = result
-          .replace(/^\r*\n*|[ ]*/, '')                          //remove leading  empty lines and spaces
-          .replace(/(?<=\n)\d+(\n\n|$)/g, '')                   //remove page numbers
-          .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, '\n\n$&')   //divided it according to numerical (sub)sections
-          .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, ' ')
+      if (fileList[0].type === "application/pdf")
+        result = formatText(result)
 
-      props.setNextPageProps({textareaValue: result, error: error?.message});
+      props.setNextPageProps({ textareaValue: result, error: error?.message });
       props.setPageCount(props.pageCount + 1);
-    })
+    });
   }, []);
 
   return (
@@ -114,15 +111,7 @@ function HomePage(props) {
           }}
           onClick={async () => {
             let exportedKey = await exportSecretKey(props.user.keyObj);
-
-            function download(content, fileName, contentType) {
-              let a = document.createElement("a");
-              let file = new Blob([content], { type: contentType });
-              a.href = URL.createObjectURL(file);
-              a.download = fileName;
-              a.click();
-            }
-            download(JSON.stringify(exportedKey), "key.json", "json/application");
+            downloadFromString(JSON.stringify(exportedKey), "key.json", "json/application");
           }}
         >
           <KeySVG width={60} />

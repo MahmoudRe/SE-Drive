@@ -1,0 +1,70 @@
+.file-card {
+  background-color: var(--color-primary-bg-tint);
+  font-weight: 700;
+  padding: 1rem;
+  border-radius: .3rem;
+  font-size: 1.8rem;
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-template-rows: 1fr 1fr;
+  align-items: flex-start;
+  gap: 0 2rem;
+  margin-bottom: 1rem;
+}
+
+.file-card:hover {
+  outline: 2px solid var(--color-primary);
+  cursor: pointer;
+}
+
+.file-card__icon {
+  grid-row: -1 / 1;
+  place-self: center;
+  padding-top: 5px;
+  padding-left: .5rem;
+  transform: scale(1.2);
+}
+
+.file-card__size {
+  color: var(--color-primary);
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+/* progress bar */
+
+.file-card__size-progress-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 0.2rem;
+}
+
+.file-card__progress {
+  --progress: 0%;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 1rem;
+  margin-left: 3rem;
+  background-color: var(--color-primary-bg);
+  border-radius: 5rem;
+  position: relative;
+}
+
+.file-card__progress::before {
+  content: "⤓";
+  color: var(--color-primary);
+  margin-left: -2.1rem;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.file-card__progress::after {
+  transition: all 0.5s ease;
+  content: "";
+  position: absolute;
+  width: var(--progress);
+  height: 1rem;
+  background-color: var(--color-primary);
+  border-radius: 5rem;
+}
