@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { downloadFromURL } from "../libs/utils";
+import { downloadFromURL, downloadFromBuffer } from "../libs/utils";
 import { getFileIcon, bytesToString } from "../libs/advance-file-input";
+import { abConcat } from "searchable-encryption";
 import "./FileCard.css";
 
 /**
@@ -17,16 +18,27 @@ export default function FileCard(props) {
     <div
       className="file-card"
       onClick={async () => {
-        // if(buffer) {
-        //   return downloadFromBuffer(buffer, file.name, file.type);
-        // }
-        let buff = await downloadFromURL("https://dweb.link/ipfs/" + file.path, {
+        if(buffer)
+          return downloadFromBuffer(buffer, file.name, file.type);
+
+        if(progress) return;
+        setProgress(2);
+
+        let dataBuffer = await downloadFromURL("https://dweb.link/ipfs/" + file.path, {
           fileName: file.name,
           contentType: file.type,
           contentSize: file.size,
           callbackProgress: setProgress,
         });
-        setBuffer(buff);
+
+        let decryptedData = await crypto.subtle.decrypt(
+          { name: "AES-CBC", iv: props.user.keyObj.iv },
+          props.user.keyObj.key,
+          dataBuffer.buffer
+        );
+
+        downloadFromBuffer(decryptedData, file.name);
+        setBuffer(decryptedData);
       }}
       {...restProps}
     >

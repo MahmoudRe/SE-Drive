@@ -125,7 +125,7 @@ function SearchPage(props) {
         {!!resultFiles.length && <h3> Files: </h3>}
         {!!resultFiles.length &&
           resultFiles.map((file, idx) => (
-            <FileCard key={idx} file={file} />
+            <FileCard key={idx} file={file} user={props.user}/>
           ))}
 
         {!!resultNotes.length && <h3> Notes: </h3>}

@@ -1,8 +1,13 @@
+export function downloadFromBuffer(buffer, fileName) {
+  let file = new Blob([buffer]);
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+}
+
 export function downloadFromString(content, fileName, contentType) {
   let a = document.createElement("a");
-  if (typeof content !== "string") {
-    content = Buffer.from(content);
-  }
   let file = new Blob([content], { type: contentType });
   a.href = URL.createObjectURL(file);
   a.download = fileName;
@@ -35,14 +40,22 @@ export async function downloadFromURL(url, options) {
     callbackProgress(Math.floor((receivedLength / contentSize) * 100));
   }
 
-  let file = new Blob(chunks);
+  // Step 4: concatenate chunks into single Uint8Array
+  let chunksAll = new Uint8Array(receivedLength); // (4.1)
+  let position = 0;
+  for(let chunk of chunks) {
+    chunksAll.set(chunk, position); // (4.2)
+    position += chunk.length;
+  }
 
-  let a = document.createElement("a");
-  a.href = URL.createObjectURL(file);
-  a.download = fileName;
-  a.click();
+  // let file = new Blob(chunks);
 
-  return chunks;
+  // let a = document.createElement("a");
+  // a.href = URL.createObjectURL(file);
+  // a.download = fileName;
+  // a.click();
+
+  return chunksAll;
 }
 
 export function formatText(str) {

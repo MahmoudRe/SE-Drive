@@ -95,7 +95,6 @@ ipcMain.handle('get-text', async (event, filePath) => {
     .catch(err => ["", err]);
 })
 
-ipcMain.handle('upload-ipfs', async (event, filePath) => {
-  const file = fs.readFileSync(filePath);
-  return ipfs.add(file)
+ipcMain.handle('upload-ipfs', async (event, arrayBuffer) => {
+  return ipfs.add(arrayBuffer)
 })

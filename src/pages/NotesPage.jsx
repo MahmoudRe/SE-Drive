@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { encrypt, buildIndex, ab2str, str2ab } from 'searchable-encryption';
+import { encrypt, buildIndex } from 'searchable-encryption';
 import Spinner from '../components/Spinner';
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import DragDropArea from "../libs/drag-drop-area.js";

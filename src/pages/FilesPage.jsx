@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { encrypt, buildIndex, ab2str, str2ab } from "searchable-encryption";
+import { encrypt, buildIndex } from "searchable-encryption";
 import Spinner from "../components/Spinner";
 import { ReactComponent as FilesDirSVG } from "../assets/files-dir.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
@@ -38,17 +38,25 @@ function NotesPage(props) {
     data.segments = [];
 
     for (let { file, keywords } of advanceFileInput.getData()) {
-      const ipfsFile = await ipcRenderer.invoke("upload-ipfs", file.path).catch((e) => {
-        alert("There is an issue occured! " + e.message);
+      let encryptedFile = await crypto.subtle.encrypt(
+        { name: "AES-CBC", iv: props.user.keyObj.iv },
+        props.user.keyObj.key,
+        await file.arrayBuffer()
+      );
+
+      const ipfsFile = await ipcRenderer.invoke("upload-ipfs", encryptedFile).catch((e) => {
+        alert("There is an issue occurred! " + e.message);
         setLoading(false);
       });
+
       let segmentData = JSON.stringify({
         segType: "ipfsFile",
         type: file.type,
         path: ipfsFile.path,
         size: file.size,
-        name: file.name
+        name: file.name,
       });
+      
       data.segments.push({ pointer: crypto.randomUUID(), data: segmentData });
       keywordsExtractor = { ...keywordsExtractor, [segmentData]: keywords.split(", ") };
     }
@@ -71,8 +79,6 @@ function NotesPage(props) {
       return;
     }
 
-    console.log(data);
-
     await ipcRenderer
       .invoke("submit-transaction", [
         "storeJSON",
@@ -89,7 +95,7 @@ function NotesPage(props) {
       })
       .catch((e) => {
         setLoading(false);
-        alert("Something went wrong: ", e);
+        setError(e.message);
       });
   };
 
