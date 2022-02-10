@@ -26,6 +26,8 @@ function SearchPage(props) {
 
     let hashedQueries = queries
       .trim()
+      .toUpperCase()
+      .replace(/\"/g, "") //remove quotes as it's used to apply strict search filter on the results
       .split("|")
       .map(async (query) => {
         // for query consists of multiple keywords, the trapdoor is the hash for each keyword
@@ -116,6 +118,15 @@ function SearchPage(props) {
             }}
           />
         </div>
+        <div className="tooltip">
+          i
+          <span className="tooltiptext">
+            This search results in all the segments and files that include all the words of the
+            search query. For advance searching, you can use:
+            <li>Pipe character "|" as an "OR" operator</li>
+            <li>Quotes to define strict searching</li>
+          </span>
+        </div>
       </div>
       <section
         className="search-results"
@@ -134,28 +145,34 @@ function SearchPage(props) {
 
         {!!resultNotes.length && <h3> Notes: </h3>}
         {!!resultNotes.length &&
-          resultNotes.map((e, idx) => (
-            <div
-              className="result-segment"
-              key={idx}
-              dangerouslySetInnerHTML={{
-                __html: e.replace(
-                  new RegExp(
-                    keyword
-                      .trim()
-                      .split("|")
-                      .map((w) => w.trim())
-                      .join("|")
-                      .split(" ")
-                      .map((w) => w.trim())
-                      .join("|"),
-                    "gi"
-                  ),
-                  '<span class="highlight"}>$&</span>' // $&: is the placeholder for the matched string
-                ),
-              }}
-            />
-          ))}
+          resultNotes.map((e, idx) => {
+            let regex = new RegExp(
+              "(?<=[\r\n\t ])(" + //don't match partial words (lookbehind to check if it's the start of the word)
+                keyword
+                  .trim()
+                  .split("|")
+                  .map((w) => w.trim())
+                  .join("|")
+                  .split(/ (?![^"]*")/g) //split by white-spaces outside string quotes
+                  .map((w) => w.replace(/"/g, "").replace(/ /g, "[\r\n\t ]*").trim())
+                  .join("|") +
+                ")(?=[\r\n\t ])", //don't match partial words (lookahead to check if it's the end of the word)
+              "gi"
+            );
+
+            if(e.match(regex))
+              return (
+                <div
+                  className="result-segment"
+                  key={idx}
+                  dangerouslySetInnerHTML={{
+                    __html: e
+                      .replace(regex, '<span class="highlight"}>$&</span>') // $&: is the placeholder for the matched string
+                      .replace(/[\r\n]/g, "<br/>"),
+                  }}
+                />
+            );
+          })}
 
         {!resultNotes.length && !resultFiles.length && (
           <div

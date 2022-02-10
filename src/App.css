@@ -227,6 +227,7 @@ textarea.--dragover {
   border-radius: .5rem;
   font-size: 1.8rem;
   user-select: text;
+  line-height: 1.3;
 }
 
 /* ------------ Scrollbar ------------ */
