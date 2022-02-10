@@ -31,9 +31,8 @@
   "main": "public/electron.js",
   "homepage": "./",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently -k \"BROWSER=none react-scripts start\" \"npm:electron\"",
     "build": "react-scripts build",
-    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
     "preelectron-pack": "npm run build",
     "electron-pack": "electron-builder -c.extraMetadata.main=build/electron.js",
