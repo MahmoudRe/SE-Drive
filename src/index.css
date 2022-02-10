@@ -36,6 +36,22 @@ body {
   user-select: none;
 }
 
+body .app-title-bar {
+  content: "";
+  width: 100%;
+  height: 3rem;
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  z-index: 1001;
+  -webkit-app-region: drag;
+  transition: all .3s ease;
+}
+
+body .app-title-bar:hover {
+  background-color: var(--color-primary);
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

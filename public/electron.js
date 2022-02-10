@@ -17,7 +17,7 @@ function createWindow(queryString = "") {
       nodeIntegration: true,
       contextIsolation: false
     },
-    // titleBarStyle: 'hidden',
+    titleBarStyle: 'hidden',
   });
 
   // and load the index.html of the app.
