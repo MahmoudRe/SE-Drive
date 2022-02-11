@@ -67,8 +67,8 @@ function NotesPage(props) {
     data.indexTable = buildIndex(data.segments, props.user.keyObj, (e) => {
       let formatted = e
         .replace(/[^A-Za-z0-9_’'\n\r ]/g, "") //remove any symbol or punctuation attached to strings
-        .split(/[\r\n ]/g)
-        .map((w) => w.toUpperCase());
+        .toUpperCase()
+        .split(/[\r\n ]/g);
 
       return new Set(formatted);
     });
@@ -146,7 +146,6 @@ function NotesPage(props) {
           {props.error || error}
         </p>
         <div className="tooltip">
-          {" "}
           i
           <span className="tooltiptext">
             To enable searching on encrypted (very long) text, it should be first divided into

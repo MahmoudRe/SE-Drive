@@ -58,7 +58,7 @@ function NotesPage(props) {
       });
       
       data.segments.push({ pointer: crypto.randomUUID(), data: segmentData });
-      keywordsExtractor = { ...keywordsExtractor, [segmentData]: keywords.split(", ") };
+      keywordsExtractor = { ...keywordsExtractor, [segmentData]: keywords.toUpperCase().split(", ") };
     }
 
     data.indexTable = buildIndex(data.segments, props.user.keyObj, (e) => keywordsExtractor[e]);
