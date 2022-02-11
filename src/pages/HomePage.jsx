@@ -75,13 +75,13 @@ function HomePage(props) {
       </div>
       <section style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
         <button
-          style={{ ...styleCard, backgroundColor: "#FFDCE3", border: "3px solid #DF2549" }}
+          style={{ ...styleCard, backgroundColor: "#FFDCE3", border: "3px solid #DF2549", gap: "1.75rem" }}
           onClick={() => {
             props.setPageCount(props.pageCount + 1);
           }}
           ref={notes}
         >
-          <BookSVG width={60} />
+          <BookSVG width={55} />
           Notes
         </button>
         <button
@@ -108,13 +108,14 @@ function HomePage(props) {
             backgroundColor: "#FFF7E4",
             border: "3px solid #E8BB1A",
             lineHeight: 1,
+            padding: "1rem"
           }}
           onClick={async () => {
             let exportedKey = await exportSecretKey(props.user.keyObj);
             downloadFromString(JSON.stringify(exportedKey), "key.json", "json/application");
           }}
         >
-          <KeySVG width={60} />
+          <KeySVG width={50} />
           Export key
         </button>
         <button
