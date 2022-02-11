@@ -44,7 +44,7 @@ h3 {
 
 .either-area {
   display: grid;
-  grid-template-columns: minmax(20rem, auto) min-content 1fr;
+  grid-template-columns: minmax(20rem, auto) min-content minmax(30%, 1fr);
   gap: 3rem;
 }
 

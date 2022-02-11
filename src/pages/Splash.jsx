@@ -43,23 +43,23 @@ function HomePage(props) {
       >
         <p style={{ fontSize: "2rem", textAlign: "justify" }}>
           SE Drive is an open-source platform that allows its users to store 
-          their <span class="highlight">notes</span>, <span class="highlight">files</span> 
-          , <span class="highlight">photos</span>
+          their <span className="highlight">notes</span>, <span className="highlight">files</span> 
+          , <span className="highlight">photos</span>
           securely and privately on public/private blockchains, untrusted cloud services, or even on
           a local disk drive. 
-          State-of-the-art <span class="highlight">index-based searchable encryption</span> technique is utilized to
+          State-of-the-art <span className="highlight">index-based searchable encryption</span> technique is utilized to
           ensure every bit of users' data is encrypted the moment it's uploaded, then only the
           key-owners can search through this encrypted data without any compromises on
           security
-          , <span class="highlight">privacy</span>, or efficiency. The system is designed such that
-          any party, involved in the data storage, knows <span class="highlight">NOTHING</span>
+          , <span className="highlight">privacy</span>, or efficiency. The system is designed such that
+          any party, involved in the data storage, knows <span className="highlight">NOTHING</span>
           about the actual data or the search queries, e.g. peers on a blockchain network, those who
-          execute the <span class="highlight">smart contract</span> of the search queries, or cloud
+          execute the <span className="highlight">smart contract</span> of the search queries, or cloud
           service providers.
         </p>
         <p style={{ fontSize: "2rem", textAlign: "justify" }}>
-          The current version of the application is optimized to work with <span class="highlight">Hyperledger Fabric</span> through 
-          smart contract <span class="highlight">(Chaincode)</span>. However, the application can be adjusted
+          The current version of the application is optimized to work with <span className="highlight">Hyperledger Fabric</span> through 
+          smart contract <span className="highlight">(Chaincode)</span>. However, the application can be adjusted
           easily to adopt different blockchain solutions or conventional cloud server.
         </p>
         <button className="next-button --hand" onClick={() => props.setPageCount(0)}>

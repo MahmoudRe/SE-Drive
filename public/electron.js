@@ -39,10 +39,12 @@ function createWindow(queryString = "") {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  if (fs.existsSync(path.join(getAppDataPath(), 'AdminIdentity.id')) && fs.existsSync(path.join(getAppDataPath(), 'connection.json'))) 
-    Chaincode.connect()
+  if (fs.existsSync(path.join(getAppDataPath(), 'AdminIdentity.id')) && fs.existsSync(path.join(getAppDataPath(), 'connection.json'))) {
+    let options = JSON.parse(fs.readFileSync(path.join(getAppDataPath(), 'settings.json'), "utf8"))
+    Chaincode.connect(options)
       .then(() => createWindow('?connected=1'))
       .catch(() => createWindow());
+  }
   else
     createWindow();
 });
@@ -59,10 +61,12 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    if (fs.existsSync(path.join(getAppDataPath(), 'AdminIdentity.id')) && fs.existsSync(path.join(getAppDataPath(), 'connection.json'))) 
-    Chaincode.connect()
-      .then(() => createWindow('?connected=1'))
-      .catch(() => createWindow());
+    if (fs.existsSync(path.join(getAppDataPath(), 'AdminIdentity.id')) && fs.existsSync(path.join(getAppDataPath(), 'connection.json'))) {
+      let options = JSON.parse(fs.readFileSync(path.join(getAppDataPath(), 'settings.json'), "utf8"))
+      Chaincode.connect(options)
+        .then(() => createWindow('?connected=1'))
+        .catch(() => createWindow());
+    }
     else
       createWindow();
   }
@@ -76,9 +80,10 @@ ipcMain.handle('evaluate-transaction', async (event, args) => {
   return Chaincode.contract.evaluateTransaction(...args);
 })
 
-ipcMain.handle('connect', async (event, data) => {
+ipcMain.handle('connect', async (event, [data, options]) => {
   fs.writeFileSync(path.join(getAppDataPath(), 'connection.json'), data);
-  return Chaincode.connect();
+  fs.writeFileSync(path.join(getAppDataPath(), 'settings.json'), JSON.stringify(options));
+  return Chaincode.connect(options);
 })
 
 ipcMain.handle('add-peer', async (event, [peerId]) => {
@@ -89,6 +94,7 @@ ipcMain.handle('add-peer', async (event, [peerId]) => {
 ipcMain.handle('logout', async (event, args) => {
   fs.unlinkSync(path.join(getAppDataPath(), 'AdminIdentity.id'));
   fs.unlinkSync(path.join(getAppDataPath(), 'connection.json'));
+  fs.unlinkSync(path.join(getAppDataPath(), 'settings.json'));
   return true;
 })
 

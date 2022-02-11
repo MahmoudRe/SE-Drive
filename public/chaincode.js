@@ -5,7 +5,7 @@ const { getAppDataPath } = require('./main-utils')
 
 class Chaincode {
   constructor(options) {
-    let { chaincodeName = "", channelName = "mychannel" } = options;
+    let { chaincodeName = "sse-chaincode", channelName = "mychannel" } = options;
 
     this.gateway = new Gateway();
     this.network = null;
@@ -22,7 +22,10 @@ class Chaincode {
       });
   }
 
-  async connect() {
+  async connect(options) {
+    this.chaincodeName = options?.chaincodeName || this.chaincodeName;
+    this.channelName = options?.channelName || this.channelName;
+
     // Create a new file system based wallet for managing identities.
     const walletPath = path.join(getAppDataPath());
     const wallet = await Wallets.newFileSystemWallet(walletPath);
@@ -55,4 +58,4 @@ class Chaincode {
   }
 }
 
-module.exports = new Chaincode({ chaincodeName: "sse-chaincode" });
+module.exports = new Chaincode({});
