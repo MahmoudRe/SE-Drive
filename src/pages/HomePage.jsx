@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import HomeIcon from "../assets/home.png";
 import SearchIcon from "../assets/search.png";
 import GalleryIcon from "../assets/gallery.png";
+import SettingIcon from "../assets/setting.png";
 import { exportSecretKey } from "searchable-encryption";
 import { ReactComponent as BookSVG } from "../assets/book.svg";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
@@ -55,13 +56,23 @@ function HomePage(props) {
       <LogoutSVG
         width={60}
         style={{ position: "absolute", top: "calc(4vh + 3rem)", right: "4%" }}
-        className="back-home"
+        className="log-out back-home"
         onClick={async () => {
           //remove user data
           const { ipcRenderer } = window.require("electron");
           await ipcRenderer.invoke("logout");
           props.user.setKeyObj(null);
-          props.setPageCount(0);
+          props.setPageCount(-1);
+        }}
+      />
+      <img
+        src={SettingIcon}
+        alt="setting page icon"
+        width={57}
+        style={{ position: "absolute", top: "calc(4vh + 3rem)", right: "calc(4% + 80px)", opacity: .8 }}
+        className="setting back-home"
+        onClick={() => {
+          alert("Setting are coming soon in the next version!")
         }}
       />
       <div className="sub-header" style={{ marginBottom: "2rem" }}>
@@ -75,6 +86,7 @@ function HomePage(props) {
       </div>
       <section style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
         <button
+          className="--animate-content"
           style={{ ...styleCard, backgroundColor: "#FFDCE3", border: "3px solid #DF2549", gap: "1.75rem" }}
           onClick={() => {
             props.setPageCount(props.pageCount + 1);
@@ -85,6 +97,7 @@ function HomePage(props) {
           Notes
         </button>
         <button
+          className="--animate-content"
           style={{ ...styleCard, backgroundColor: "#E4FDEF", border: "3px solid #0FD15C" }}
           onClick={() => {
             props.setPageCount(props.pageCount + 3);
@@ -94,6 +107,7 @@ function HomePage(props) {
           Files
         </button>
         <button
+          className="--animate-content"
           style={{ ...styleCard, backgroundColor: "#D8D9ED", border: "3px solid #4345CF" }}
           onClick={() => {
             props.setPageCount(props.pageCount + 2);
@@ -103,6 +117,7 @@ function HomePage(props) {
           Search
         </button>
         <button
+          className="--animate-content"
           style={{
             ...styleCard,
             backgroundColor: "#FFF7E4",
@@ -119,6 +134,7 @@ function HomePage(props) {
           Export key
         </button>
         <button
+          className="--animate-content"
           style={{ ...styleCard }}
           onClick={() => {
             alert("This feature is still under development. Stay tuned for AI-based searchable encrypted images! :)")
