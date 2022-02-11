@@ -498,7 +498,7 @@ export default class AdvanceFileInput {
                 elementText = `
                 <div class="afi__file-card-wrapper" data-id="${id}"> 
                     ${elementText} 
-                    <textarea class="keywords" placeholder="Type some keywords for this file, separated by comma..">${ name.replace(/^\r*\n*|[ ]*/, '').replace(/\.[A-Za-z]{1,5}/, '').replace(/[ ]|\-/, ', ') }</textarea>
+                    <textarea class="keywords" placeholder="Type some keywords for this file, separated by comma..">${ name.trim().replace(/\.[A-Za-z]{1,5}/g, '').replace(/ |-/g, ', ') }</textarea>
                 </div>`
 
             const fileCard = parseElement(elementText)

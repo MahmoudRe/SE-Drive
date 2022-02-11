@@ -1,6 +1,7 @@
 const { Gateway, Wallets } = require("fabric-network");
 const path = require("path");
 const fs = require("fs");
+const { getAppDataPath } = require('./main-utils')
 
 class Chaincode {
   constructor(options) {
@@ -23,11 +24,11 @@ class Chaincode {
 
   async connect() {
     // Create a new file system based wallet for managing identities.
-    const walletPath = path.join(process.cwd(), "Wallet");
+    const walletPath = path.join(getAppDataPath());
     const wallet = await Wallets.newFileSystemWallet(walletPath);
 
     // Connect gateway to our peer node.
-    const connectionProfilePath = path.resolve(__dirname, "..", "connection.json");
+    const connectionProfilePath = path.join(getAppDataPath(), "connection.json");
     const connectionProfile = JSON.parse(fs.readFileSync(connectionProfilePath, "utf8"));
 
     // eslint-disable-line @typescript-eslint/no-unsafe-assignment

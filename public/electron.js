@@ -1,5 +1,6 @@
 const path = require('path');
 const Chaincode = require("./chaincode");
+const { getAppDataPath } = require('./main-utils')
 const { create: ipfsClient } = require("ipfs-http-client")
 const fs = require('fs');
 var reader = require('any-text');
@@ -36,7 +37,7 @@ function createWindow(queryString = "") {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  if (fs.existsSync('Wallet/AdminIdentity.id') && fs.existsSync('connection.json')) 
+  if (fs.existsSync(path.join(getAppDataPath(), 'AdminIdentity.id')) && fs.existsSync(path.join(getAppDataPath(), 'connection.json'))) 
     Chaincode.connect()
       .then(() => createWindow('?connected=1'))
       .catch(() => createWindow());
@@ -56,7 +57,7 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    if (fs.existsSync('Wallet/AdminIdentity.id') && fs.existsSync('connection.json')) 
+    if (fs.existsSync(path.join(getAppDataPath(), 'AdminIdentity.id')) && fs.existsSync(path.join(getAppDataPath(), 'connection.json'))) 
     Chaincode.connect()
       .then(() => createWindow('?connected=1'))
       .catch(() => createWindow());
@@ -74,18 +75,18 @@ ipcMain.handle('evaluate-transaction', async (event, args) => {
 })
 
 ipcMain.handle('connect', async (event, data) => {
-  fs.writeFileSync('connection.json', data);
+  fs.writeFileSync(path.join(getAppDataPath(), 'connection.json'), data);
   return Chaincode.connect();
 })
 
 ipcMain.handle('add-peer', async (event, [peerId]) => {
-  fs.writeFileSync('Wallet/AdminIdentity.id', peerId);
+  fs.writeFileSync(path.join(getAppDataPath(), 'AdminIdentity.id'), peerId);
   return true;
 })
 
 ipcMain.handle('logout', async (event, args) => {
-  fs.unlinkSync('Wallet/AdminIdentity.id');
-  fs.unlinkSync('connection.json');
+  fs.unlinkSync(path.join(getAppDataPath(), 'AdminIdentity.id'));
+  fs.unlinkSync(path.join(getAppDataPath(), 'connection.json'));
   return true;
 })
 

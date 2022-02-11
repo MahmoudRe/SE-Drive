@@ -51,7 +51,7 @@ export async function downloadFromURL(url, options) {
 
 export function formatText(str) {
   return str
-    .replace(/^[\n\r\t ]*/g, "") //remove leading  empty lines and spaces
+    .trim()
     .replace(/(?<=\n)\d+(\n\n|$)/g, "") //remove page numbers
     .replace(/(?<=\n)(?<!(\n\d.*|\:)\n)(\d.*[a-zA-Z]{2,}|Abstract|References)\n/g, "\n\n$&") //divided it according to numerical (sub)sections
     .replace(/(?<!(\n|\n((\d|•).{3,}|Abstract)))\n(?!(\[?\d\]?|•).{4,}\n)/g, " ");
