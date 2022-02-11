@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { ReactComponent as NetworkSVG } from "../assets/network.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
+import Link from "../components/Link";
 import { readFile } from "../libs/utils";
 
 function ConnectionPage(props) {
@@ -40,8 +41,8 @@ function ConnectionPage(props) {
         setTimeout(async () => {
           let option = {
             chaincodeName: chaincodeNameInput.current.value || undefined,
-            channelName: channelNameInput.current.value || undefined
-          }
+            channelName: channelNameInput.current.value || undefined,
+          };
           const { ipcRenderer } = window.require("electron");
           ipcRenderer
             .invoke("connect", [data, option])
@@ -95,7 +96,14 @@ function ConnectionPage(props) {
             </div>
             <div className="form-field" style={{ width: "36vw" }}>
               <label htmlFor="chaincodeName">Chaincode Name</label>
-              <input type="text" name="chaincodeName" id="chaincodeName" placeholder="sse-chaincode" ref={chaincodeNameInput} required />
+              <input
+                type="text"
+                name="chaincodeName"
+                id="chaincodeName"
+                placeholder="sse-chaincode"
+                ref={chaincodeNameInput}
+                required
+              />
               <p style={{ width: "100%", marginBottom: 0 }}></p>
             </div>
           </form>
@@ -104,16 +112,7 @@ function ConnectionPage(props) {
             <input type="file" accept="application/json" name="connection" id="connection-config" />
             <p className="help-text">
               Connection profile is used to get access to the network; &nbsp;
-              <a
-                href="https://github.com/MahmoudRe/searchable-encryption"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const { shell } = window.require("electron");
-                  shell.openExternal(e.target.href);
-                }}
-              >
-                learn more!
-              </a>
+              <Link href="https://github.com/MahmoudRe/searchable-encryption">learn more!</Link>
             </p>
           </div>
         </div>

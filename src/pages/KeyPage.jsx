@@ -3,6 +3,7 @@ import { genSecretKey, importSecretKey } from "searchable-encryption";
 import { ReactComponent as KeySVG } from "../assets/key.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
+import Link from "../components/Link";
 import { readFile } from "../libs/utils";
 
 function KeyPage(props) {
@@ -24,18 +25,20 @@ function KeyPage(props) {
       dragText: "Drag your key file here",
       beforeFileAdded: async (fileList) => {
         let file = fileList[0];
-        return readFile(file).then((res) => {
-          try {
-            setKeyObjRaw(JSON.parse(res))
-            return true;
-          } catch (err) {
-            alert("The selected file isn't a valid key: \n" + err.message)
-            return false;      
-          }
-        }).catch((err) => {
-          alert("There is an issue while reading the file: \n" + err.message);
-          return false;
-        })
+        return readFile(file)
+          .then((res) => {
+            try {
+              setKeyObjRaw(JSON.parse(res));
+              return true;
+            } catch (err) {
+              alert("The selected file isn't a valid key: \n" + err.message);
+              return false;
+            }
+          })
+          .catch((err) => {
+            alert("There is an issue while reading the file: \n" + err.message);
+            return false;
+          });
       },
       onFileRemoved: () => {
         setKeyObjRaw("");
@@ -54,15 +57,14 @@ function KeyPage(props) {
               props.setPageCount(props.pageCount + 1);
             })
             .catch((e) => {
-              alert("There is an issue while importing the key:\n" + e.message)
+              alert("There is an issue while importing the key:\n" + e.message);
             });
           setShowSpinner(false);
         }, 750);
       };
       props.nextBtn.setCallback(() => cb);
       props.nextBtn.setShow(true);
-    }
-    else {
+    } else {
       props.nextBtn.setCallback(() => {});
       props.nextBtn.setShow(false);
     }
@@ -129,16 +131,7 @@ function KeyPage(props) {
             <input type="file" accept="application/json" name="connection" id="key-object-file" />
             <p className="help-text">
               Your secret key is kept locally and used for encryption; &nbsp;
-              <a
-                href="https://github.com/MahmoudRe/searchable-encryption"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const { shell } = window.require("electron");
-                  shell.openExternal(e.target.href);
-                }}
-              >
-                learn more!
-              </a>
+              <Link href="https://github.com/MahmoudRe/searchable-encryption">learn more!</Link>
             </p>
           </div>
         </div>

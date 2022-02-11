@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as IdCardSVG } from "../assets/id-card.svg";
 import AdvanceFileInput from "../libs/advance-file-input.js";
 import Spinner from "../components/Spinner";
+import Link from "../components/Link";
 
 function RegisterPage(props) {
   const [peerId, setPeerId] = useState("");
@@ -18,7 +19,7 @@ function RegisterPage(props) {
 
     new AdvanceFileInput({
       selector: "#peer-id",
-      dragText: "Drag \"Peer.id\" file here",
+      dragText: 'Drag "Peer.id" file here',
       onFileAdded: (fileList) => {
         let file = fileList[0];
         let reader = new FileReader();
@@ -39,17 +40,22 @@ function RegisterPage(props) {
         setShowSpinner(true);
         setTimeout(async () => {
           const { ipcRenderer } = window.require("electron");
-          ipcRenderer.invoke("add-peer", [peerId])
+          ipcRenderer
+            .invoke("add-peer", [peerId])
             .then(() => {
               props.nextBtn.setShow(false);
               setShowSpinner(false);
               props.setPageCount(props.pageCount + 1);
             })
             .catch((e) => {
-              let errorEl = Array.from(document.querySelectorAll('.advance-file-input + .error')).pop();
-              let helpEl = Array.from(document.querySelectorAll('.advance-file-input + .error + .help-text')).pop();
+              let errorEl = Array.from(
+                document.querySelectorAll(".advance-file-input + .error")
+              ).pop();
+              let helpEl = Array.from(
+                document.querySelectorAll(".advance-file-input + .error + .help-text")
+              ).pop();
               errorEl.textContent = "There is an issue occurred; please try again! " + e;
-              errorEl.classList.remove('hide');
+              errorEl.classList.remove("hide");
               errorEl.style.display = "block";
               helpEl.style.display = "none";
               setShowSpinner(false);
@@ -108,16 +114,9 @@ function RegisterPage(props) {
             <input type="file" name="peer-id" id="peer-id" />
             <p className="help-text">
               Couldn't you find this file? &nbsp;
-              <a
-                href="https://github.com/MahmoudRe/searchable-encryption"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const { shell } = window.require("electron");
-                  shell.openExternal(e.target.href);
-                }}
-              >
+              <Link href="https://github.com/MahmoudRe/searchable-encryption">
                 Check this link for help!
-              </a>
+              </Link>
             </p>
           </div>
         </div>

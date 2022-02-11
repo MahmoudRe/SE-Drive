@@ -44,13 +44,11 @@ function HomePage(props) {
         <p style={{ fontSize: "2rem", textAlign: "justify" }}>
           SE Drive is an open-source platform that allows its users to store 
           their <span className="highlight">notes</span>, <span className="highlight">files</span> 
-          , <span className="highlight">photos</span>
-          securely and privately on public/private blockchains, untrusted cloud services, or even on
-          a local disk drive. 
+          , <span className="highlight">photos</span> securely and privately on public/private blockchains, 
+          untrusted cloud services, or even on a local disk drive. 
           State-of-the-art <span className="highlight">index-based searchable encryption</span> technique is utilized to
           ensure every bit of users' data is encrypted the moment it's uploaded, then only the
-          key-owners can search through this encrypted data without any compromises on
-          security
+          key-owners can search through this encrypted data without any compromises on security
           , <span className="highlight">privacy</span>, or efficiency. The system is designed such that
           any party, involved in the data storage, knows <span className="highlight">NOTHING</span>
           about the actual data or the search queries, e.g. peers on a blockchain network, those who

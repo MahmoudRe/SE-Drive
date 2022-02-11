@@ -111,7 +111,7 @@ export default class AdvanceFileInput {
         if (withAnimation) cloudIcon.classList.add('--animate');
         if (!input.multiple) Object.assign(cloudIcon.style, { height: '35px', transform: 'scale(1.1)' });
 
-        let dragTextEl = parseElement(`<p> ${dragText} or <a> browse </a> </p>`);
+        let dragTextEl = parseElement(`<p> ${dragText} or <a href="#"> browse </a> </p>`);
         label.appendChild(dragTextEl);
 
 
