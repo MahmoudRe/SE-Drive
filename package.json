@@ -1,6 +1,6 @@
 {
   "name": "sse-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
@@ -26,7 +26,8 @@
     "workbox-range-requests": "^5.1.4",
     "workbox-routing": "^5.1.4",
     "workbox-strategies": "^5.1.4",
-    "workbox-streams": "^5.1.4"
+    "workbox-streams": "^5.1.4",
+    "any-text": "^1.2.0"
   },
   "main": "public/electron.js",
   "homepage": "./",
@@ -58,7 +59,6 @@
     ]
   },
   "devDependencies": {
-    "any-text": "^1.2.0",
     "concurrently": "^7.0.0",
     "electron": "^16.0.8",
     "electron-builder": "^22.14.5",
@@ -66,13 +66,15 @@
     "wait-on": "^6.0.0"
   },
   "build": {
-    "appId": "nonExistentID",
+    "appId": "com.sse-app.searchable-encryption-chaincode",
+    "productName": "Searchable Encryption Chaincode",
+    "copyright": "Copyright © 2021 Mahmoud Al-Refaai",
     "files": [
       "build/**/*",
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "src/assets/logo"
     }
   }
 }

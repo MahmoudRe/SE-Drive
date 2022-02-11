@@ -120,7 +120,7 @@ function HomePage(props) {
         <button
           style={{ ...styleCard }}
           onClick={() => {
-            props.setPageCount(props.pageCount + 3);
+            alert("This feature is still under development. Stay tuned for AI-based searchable encrypted images! :)")
           }}
         >
           <img src={GalleryIcon} alt="search page" width={65} />
