@@ -13,7 +13,9 @@ function createWindow(queryString = "") {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1000,
+    minWidth:915,
     height: 675,
+    minHeight:550,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
