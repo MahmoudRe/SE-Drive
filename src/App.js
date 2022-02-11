@@ -7,6 +7,7 @@ import NotesPage from "./pages/NotesPage";
 import SearchPage from "./pages/SearchPage";
 import FilesPage from "./pages/FilesPage";
 import KeyPage from "./pages/KeyPage";
+import Splash from "./pages/Splash";
 import { ReactComponent as LeftArrowSVG } from "./assets/left-arrow.svg";
 import HomeIcon from "./assets/home.png";
 import "./libs/advance-file-input.css";
@@ -35,7 +36,7 @@ function App() {
     setCallback,
   };
 
-  const [pageCount, setPageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(-1);
   const [nextPageProps, setNextPageProps] = useState({});
 
   useEffect(() => {
@@ -43,7 +44,7 @@ function App() {
     const connected = urlParams.get("connected");
 
     let key = JSON.parse(localStorage.getItem("key"));
-    key && importSecretKey(key).then(setKeyObj)
+    key && importSecretKey(key).then(setKeyObj);
 
     if (connected && key) setPageCount(3);
   }, []);
@@ -58,6 +59,8 @@ function App() {
     <SearchPage {...props} {...nextPageProps} />,
     <FilesPage {...props} {...nextPageProps} />,
   ];
+
+  if (pageCount < 0) return <Splash {...props} />;
 
   return (
     <div className="App">
@@ -80,10 +83,10 @@ function App() {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          paddingBottom: "2rem"
+          paddingBottom: "2rem",
         }}
       >
-        {pageCount > 0 && pageCount < 3 ? (
+        {pageCount < 3 ? (
           <button className="back-button --hand" onClick={() => setPageCount(pageCount - 1)}>
             <LeftArrowSVG /> <span style={{ marginTop: "0.7rem" }}>Back</span>
           </button>

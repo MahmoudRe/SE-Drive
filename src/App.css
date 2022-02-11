@@ -72,9 +72,9 @@ button:hover,
   box-shadow: 0 5px 15px -2px rgba(0, 0, 0, 0.3);
 }
 
-button.--dragover > *,
-button:hover > *, 
-.button:hover > * {
+button.--animate-content.--dragover > *,
+button.--animate-content:hover > *, 
+.button.--animate-content:hover > * {
   transform: translateY(-3px);
 }
 
