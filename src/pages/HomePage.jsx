@@ -71,9 +71,7 @@ function HomePage(props) {
         width={57}
         style={{ position: "absolute", top: "calc(4vh + 3rem)", right: "calc(4% + 80px)", opacity: .8 }}
         className="setting back-home"
-        onClick={() => {
-          alert("Setting are coming soon in the next version!")
-        }}
+        onClick={() => { props.setPageCount(7) }}
       />
       <div className="sub-header" style={{ marginBottom: "2rem" }}>
         <img
@@ -130,7 +128,7 @@ function HomePage(props) {
             downloadFromString(JSON.stringify(exportedKey), "key.json", "json/application");
           }}
         >
-          <KeySVG width={50} />
+          <KeySVG width={45} />
           Export key
         </button>
         <button

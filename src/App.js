@@ -3,6 +3,7 @@ import { exportSecretKey, importSecretKey } from "searchable-encryption";
 import ConnectionPage from "./pages/ConnectionPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
+import SettingPage from "./pages/SettingPage";
 import NotesPage from "./pages/NotesPage";
 import SearchPage from "./pages/SearchPage";
 import FilesPage from "./pages/FilesPage";
@@ -58,6 +59,7 @@ function App() {
     <NotesPage {...props} {...nextPageProps} />,
     <SearchPage {...props} {...nextPageProps} />,
     <FilesPage {...props} {...nextPageProps} />,
+    <SettingPage {...props} {...nextPageProps} />,
   ];
 
   if (pageCount < 0) return <Splash {...props} />;
@@ -66,7 +68,7 @@ function App() {
     <div className="App">
       <header className="header">
         <h1>
-          Searchable <span className="--color-primary-txt"> Encryption </span> Chaincode
+          Searchable <span className="--color-primary-txt"> Encrypted </span> Drive
         </h1>
         {pageCount > 3 && (
           <img

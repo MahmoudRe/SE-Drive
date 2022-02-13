@@ -10,7 +10,9 @@
   --color-primary-bg-tint: #dbf0fd;
 
   --color-gray-light: #CCCCCC;
-  --color-gray: #878787
+  --color-gray: #878787;
+
+  --transition-all-except-bg: all .3s ease, background-color 0s ease, fill 0s, stroke 0s, color 0s;
 }
 
 :root * {
