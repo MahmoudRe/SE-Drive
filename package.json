@@ -67,7 +67,7 @@
   },
   "build": {
     "appId": "com.sse-app.searchable-encryption-chaincode",
-    "productName": "Searchable Encryption Chaincode",
+    "productName": "SE Drive",
     "copyright": "Copyright © 2021 Mahmoud Al-Refaai",
     "files": [
       "build/**/*",

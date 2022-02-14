@@ -114,9 +114,9 @@ function KeyPage(props) {
               required
             />
             <p style={{ width: "100%", marginBottom: 0, textAlign: "justify" }}>
-              The passphrase will be used in contracting your secret key, but it isn't only depends
-              on it, hence same passphrase won't generate the same key! Please preserve your key
-              securely for later use!
+              The passphrase is used for contracting your secret key, but with some randomization
+              for security reasons, hence same passphrase won't generate the same key! Please
+              preserve your key securely for later use!
             </p>
           </div>
           <button roll="submit" form="generate-key">
