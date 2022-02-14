@@ -53,8 +53,29 @@ function createWindow(...) {
 
 Then run `npm run electron-pack`. For more information about the configuration of the build, please refer to [the documentation of electron-builder](https://www.electron.build/configuration/configuration).
 
-## Demo
-Please refer to [this video]() for quick demo of the application.
+## Features and Demo
+Please refer to [this video]() for quick demo and go through all features of the application.
+
+### Features
+1. Encrypting all data before uploading to the network, hence no information leaks!
+1. Smart indexing for the uploaded notes, where text run through multiple filters to ignore irrelevant information and enhance searching, e.g. ignore punctuation marks.
+1. Industry standard UI/UX.
+1. Generate symmetric key and initial vector from weak passphrase using PBKDF2 algorithm.
+1. Export the generated key, combined with initial vector and secret salt to `key.json` file for sharing with authorized users.
+1. Import the secret key from previously exported `key.json` file.
+1. Easy drag and drop functionality for any file input.
+1. Dropping a text file into `Notes` textarea will extract the text from the file, formatted (slightly) and fill it automatically.
+1. Dropping a text file into `Notes` button from the home page will open the `Notes` page and has the same effect as previous point.
+1. Dropped text file can be a simple `.txt`, but also other types like: `.pdf`, `.docx` ... etc. 
+1. Pop-up tooltips in main pages for quick instruction for the user.
+1. Generate automated keywords for uploaded files based on the title.
+1. Option to add more keywords for specific file before upload to ease finding this file in the search.
+1. Files uploading to IPFS, and using public gateway to find uploaded files.
+1. Searching is fuzzy keywords search.
+1. Searching support advance search operators, namely: the pipe-char `|` as an OR operator, and the quotes-char `"..."` as a strict operator.
+1. Setting page to adjust quick configuration, like IPFS gateway or change the symmetric key.
+1. [To Be Done] AI-based searching for the encrypted images in the gallery.
+1. High modular application that can serve a based for future researchs in the field of searchable encryption.
 
 ## Screenshots
 ![splash](screenshots/1.png)
