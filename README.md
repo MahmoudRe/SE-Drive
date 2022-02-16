@@ -54,7 +54,7 @@ function createWindow(...) {
 Then run `npm run electron-pack`. For more information about the configuration of the build, please refer to [the documentation of electron-builder](https://www.electron.build/configuration/configuration).
 
 ## Features and Demo
-Please refer to [this video]() for quick demo and go through all features of the application.
+Please refer to [this video](https://youtu.be/G5cf7AmIuX4) for quick demo and go through all features of the application.
 
 ### Features
 1. Encrypting all data before uploading to the network, hence no information leaks!
